@@ -1,5 +1,6 @@
 package com.projet6.PayMyBuddy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,8 +17,6 @@ public class Connection {
     @ManyToOne
     @JoinColumn(name = "friend_id")
     private User friend;
-
-    // Getters & Setters
 
     public User getUser() {
         return user;

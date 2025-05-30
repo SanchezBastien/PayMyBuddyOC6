@@ -1,5 +1,6 @@
 package com.projet6.PayMyBuddy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -8,14 +9,17 @@ import java.math.BigDecimal;
 public class Transaction {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
+    @JsonIgnore
     private User sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id")
+    @JsonIgnore
     private User receiver;
 
     @Column(columnDefinition = "TEXT")
@@ -24,7 +28,6 @@ public class Transaction {
     @Column(precision = 10, scale = 2)
     private BigDecimal amount;
 
-    // Getters & Setters
 
     public int getId() {
         return id;
