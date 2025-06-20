@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Page de connexion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 80px;
+        }
+        .box {
+            display: inline-block;
+            padding: 40px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 200px;
+        }
+        .btn-login {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .logo {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="logo">Pay My Buddy</div>
+    <form th:action="@{/login}" method="post">
+        <input type="email" name="email" placeholder="Mail" required />
+        <input type="password" name="password" placeholder="Mot de passe" required />
+        <button type="submit" class="btn-login">Se connecter</button>
+    </form>
+</div>
+</body>
+</html>

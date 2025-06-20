@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+//Représente un transfert d'argent entre deux utilisateurs
+
 @Entity
 @Table(name = "transaction")
 public class Transaction {

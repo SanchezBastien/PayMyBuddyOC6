@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+//Fournit les opérations liées aux transactions (envoi, consultation)
+
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {

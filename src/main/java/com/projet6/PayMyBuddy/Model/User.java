@@ -1,7 +1,11 @@
 package com.projet6.PayMyBuddy.Model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.List;
+
+//Représente un utilisateur avec ses attributs (nom, email, mot de passe, solde, etc.)
 
 @Entity
 @Table(name = "user")
@@ -19,6 +23,10 @@ public class User {
 
     private String password;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal balance = BigDecimal.ZERO;
+
+
     @OneToMany(mappedBy = "sender")
     private List<Transaction> sentTransactions;
 
@@ -30,6 +38,8 @@ public class User {
 
     @OneToMany(mappedBy = "friend")
     private List<Connection> friends;
+
+
 
     public int getId() {
         return id;
@@ -98,4 +108,11 @@ public class User {
     public User() {
     }
 
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }

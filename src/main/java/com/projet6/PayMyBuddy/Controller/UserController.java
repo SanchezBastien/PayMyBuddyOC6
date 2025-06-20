@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+//Permet d’obtenir ou de gérer les informations d’un utilisateur
+
 @RestController
 @RequestMapping("/users")
 public class UserController {

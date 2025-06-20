@@ -3,7 +3,7 @@ package com.projet6.PayMyBuddy.Model;
 import java.io.Serializable;
 import java.util.Objects;
 
-
+//Classe de clé composite utilisée pour gérer la relation Connection entre deux utilisateurs.
 /*table de liaison*/
 
 public class UserConnectionId implements Serializable {

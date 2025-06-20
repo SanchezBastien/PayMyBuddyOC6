@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+//Gère les connexions utilisateurs en base
 //extend CRUD et repository signifie que la classe a pour role de communiquer avec la source de donnéees
 @Repository
 public interface ConnectionRepository extends CrudRepository<Connection, UserConnectionId> {

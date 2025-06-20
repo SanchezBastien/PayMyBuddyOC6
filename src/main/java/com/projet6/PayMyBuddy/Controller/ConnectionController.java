@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+//Gère les connexions entre utilisateurs (par exemple : afficher les amis connectés)
+
 @RestController
 @RequestMapping("/connections")
 public class ConnectionController {

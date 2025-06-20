@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+//Permet de manipuler les transactions dans la base
 //extend CRUD et repository signifie que la classe a pour role de communiquer avec la source de donnéees
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {

@@ -3,6 +3,8 @@ package com.projet6.PayMyBuddy.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+//Lien d’amitié/connexion entre deux utilisateurs
+
 @Entity
 @Table(name = "connection")
 @IdClass(UserConnectionId.class)
