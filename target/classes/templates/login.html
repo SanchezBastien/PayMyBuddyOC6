@@ -37,13 +37,26 @@
             display: inline-block;
             border-radius: 4px;
         }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="box">
     <div class="logo">Pay My Buddy</div>
+
+    <!-- Message d'erreur -->
+    <div th:if="${param.error}" class="error">
+        Identifiants invalides. Veuillez réessayer.
+    </div>
+    <div th:if="${param.logout}" class="error" style="color:green;">
+        Vous avez été déconnecté avec succès.
+    </div>
+
     <form th:action="@{/login}" method="post">
-        <input type="email" name="email" placeholder="Mail" required />
+        <input type="text" name="username" placeholder="Email" required />
         <input type="password" name="password" placeholder="Mot de passe" required />
         <button type="submit" class="btn-login">Se connecter</button>
     </form>

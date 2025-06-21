@@ -4,7 +4,7 @@ import com.projet6.PayMyBuddy.Model.User;
 import com.projet6.PayMyBuddy.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // <-- important
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,23 +20,20 @@ public class LoginController {
     // Affiche le formulaire de login
     @GetMapping("/login")
     public String showLoginForm() {
-        return "login";  // Affiche login.html depuis /templates
+        return "login";
     }
 
-    // Traite la soumission du formulaire
+    // Traite le formulaire de connexion
     @PostMapping("/login")
-    public String handleLogin(@RequestParam String email,
+    public String handleLogin(@RequestParam String username,
                               @RequestParam String password,
                               Model model) {
+        Optional<User> optionalUser = userService.getUserByEmail(username);
 
-        Optional<User> user = userService.getUserByEmail(email);
-        if (user.isPresent() && user.get().getPassword().equals(password)) {
-            // Connexion réussie
-            model.addAttribute("user", user);
+        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
             return "redirect:/profile";
         } else {
-            // Échec de connexion
-            model.addAttribute("error", "Email ou mot de passe incorrect.");
+            model.addAttribute("error", "Identifiants incorrects");
             return "login";
         }
     }

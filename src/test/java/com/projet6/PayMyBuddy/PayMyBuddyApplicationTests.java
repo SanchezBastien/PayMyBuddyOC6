@@ -9,5 +9,4 @@ class PayMyBuddyApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
