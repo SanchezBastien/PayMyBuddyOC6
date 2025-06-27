@@ -1,1 +1,9 @@
+com\projet6\PayMyBuddy\TransferControllerTest.class
 com\projet6\PayMyBuddy\PayMyBuddyApplicationTests.class
+com\projet6\PayMyBuddy\LoginControllerTest.class
+com\projet6\PayMyBuddy\AddFriendControllerTest.class
+com\projet6\PayMyBuddy\SignupControllerTest.class
+com\projet6\PayMyBuddy\TransactionControllerTest.class
+com\projet6\PayMyBuddy\ConnectionControllerTest.class
+com\projet6\PayMyBuddy\ProfileControllerTest.class
+com\projet6\PayMyBuddy\UserControllerTest.class
