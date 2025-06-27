@@ -3,6 +3,7 @@ package com.projet6.PayMyBuddy.Controller;
 import com.projet6.PayMyBuddy.Model.User;
 import com.projet6.PayMyBuddy.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,9 @@ public class SignupController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/signup")
     public String showSignupForm() {
         return "signup";
@@ -30,7 +34,7 @@ public class SignupController {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setBalance(BigDecimal.ZERO);
 
         userService.saveUser(user);

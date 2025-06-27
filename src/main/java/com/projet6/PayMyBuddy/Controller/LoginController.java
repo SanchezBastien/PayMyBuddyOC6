@@ -3,6 +3,7 @@ package com.projet6.PayMyBuddy.Controller;
 import com.projet6.PayMyBuddy.Model.User;
 import com.projet6.PayMyBuddy.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,9 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // Affiche le formulaire de login
     @GetMapping("/login")
     public String showLoginForm() {
@@ -29,8 +33,8 @@ public class LoginController {
                               @RequestParam String password,
                               Model model) {
         Optional<User> optionalUser = userService.getUserByEmail(username);
-
-        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
+        String encodePassword = passwordEncoder.encode(password);
+        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(encodePassword)) {
             return "redirect:/profile";
         } else {
             model.addAttribute("error", "Identifiants incorrects");

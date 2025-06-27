@@ -46,7 +46,11 @@
     <a th:href="@{/transfer}">Transférer</a>
     <a th:href="@{/profile}">Profil</a>
     <a th:href="@{/addfriend}">Ajouter relation</a>
-    <a th:href="@{/logout}">Se déconnecter</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" style="all: unset; color: blue; text-decoration: underline; cursor: pointer;">
+        Se déconnecter
+      </button>
+    </form>
   </nav>
 </header>
 
