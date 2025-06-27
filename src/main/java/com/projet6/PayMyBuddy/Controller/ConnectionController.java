@@ -38,24 +38,9 @@ public class ConnectionController {
 
     @PostMapping
     public ResponseEntity<Connection> createConnection(@RequestBody Connection connection) {
-        if (connection.getUser() == null || connection.getFriend() == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        Integer userId = connection.getUser().getId();
-        Integer friendId = connection.getFriend().getId();
-
-        Optional<User> userOpt = userService.getUserById(userId);
-        Optional<User> friendOpt = userService.getUserById(friendId);
-
-        if (userOpt.isEmpty() || friendOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        connection.setUser(userOpt.get());
-        connection.setFriend(friendOpt.get());
-
-        return ResponseEntity.ok(connectionService.saveConnection(connection));
+        return connectionService.createConnectionIfValid(connection)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().body(null));
     }
 
     @DeleteMapping
