@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface ConnectionRepository extends CrudRepository<Connection, UserConnectionId> {
     List<Connection> findByUser(User user);
+
+    Object findByUserAndFriend(User user1, User user2);
 }

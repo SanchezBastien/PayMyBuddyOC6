@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PayMyBuddy</a> &gt; <a href="index.source.html" class="el_package">com.projet6.PayMyBuddy.Services</a> &gt; <span class="el_source">TransactionService.java</span></div><h1>TransactionService.java</h1><pre class="source lang-java linenums">package com.projet6.PayMyBuddy.Services;
+
+import com.projet6.PayMyBuddy.Model.Transaction;
+import com.projet6.PayMyBuddy.Model.User;
+import com.projet6.PayMyBuddy.Repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+//Traite les transferts d'argent, la création et la récupération des transactions
+
+@Service
+<span class="fc" id="L17">public class TransactionService {</span>
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private UserService userService;
+
+    public Iterable&lt;Transaction&gt; getTransactions() {
+<span class="nc" id="L25">        return transactionRepository.findAll();</span>
+    }
+
+    public Optional&lt;Transaction&gt; getTransactionById(Integer id) {
+<span class="nc" id="L29">        return transactionRepository.findById(id);</span>
+    }
+
+    public List&lt;Transaction&gt; getTransactionBySender(User sender) {
+<span class="nc" id="L33">        return transactionRepository.findBySender(sender);</span>
+    }
+
+    @Transactional
+    public Transaction saveTransaction(Transaction transaction) {
+<span class="nc" id="L38">        return transactionRepository.save(transaction);</span>
+    }
+
+    @Transactional
+    public void deleteTransactionById(Integer id) {
+<span class="nc" id="L43">        transactionRepository.deleteById(id);</span>
+<span class="nc" id="L44">    }</span>
+
+    @Transactional
+    public Transaction transfer(User sender, User receiver, BigDecimal amount, String description) {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (sender.getBalance().compareTo(amount) &lt; 0) {</span>
+<span class="fc" id="L49">            throw new IllegalArgumentException(&quot;Solde insuffisant pour le transfert.&quot;);</span>
+        }
+
+        // Débit du sender
+<span class="fc" id="L53">        sender.setBalance(sender.getBalance().subtract(amount));</span>
+
+        // Crédit du receiver
+<span class="fc" id="L56">        receiver.setBalance(receiver.getBalance().add(amount));</span>
+
+        // Sauvegarder les utilisateurs avec les nouveaux soldes
+<span class="fc" id="L59">        userService.saveUser(sender);</span>
+<span class="fc" id="L60">        userService.saveUser(receiver);</span>
+
+        // Créer et enregistrer la transaction
+<span class="fc" id="L63">        Transaction transaction = new Transaction();</span>
+<span class="fc" id="L64">        transaction.setSender(sender);</span>
+<span class="fc" id="L65">        transaction.setReceiver(receiver);</span>
+<span class="fc" id="L66">        transaction.setAmount(amount);</span>
+<span class="fc" id="L67">        transaction.setDescription(description);</span>
+
+<span class="fc" id="L69">        return transactionRepository.save(transaction);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

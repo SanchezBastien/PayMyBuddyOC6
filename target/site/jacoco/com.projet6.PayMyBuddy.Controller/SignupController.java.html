@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SignupController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PayMyBuddy</a> &gt; <a href="index.source.html" class="el_package">com.projet6.PayMyBuddy.Controller</a> &gt; <span class="el_source">SignupController.java</span></div><h1>SignupController.java</h1><pre class="source lang-java linenums">package com.projet6.PayMyBuddy.Controller;
+
+import com.projet6.PayMyBuddy.Model.User;
+import com.projet6.PayMyBuddy.Services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+
+//Traite l’inscription d’un nouvel utilisateur
+
+@Controller
+<span class="fc" id="L18">public class SignupController {</span>
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @GetMapping(&quot;/signup&quot;)
+    public String showSignupForm() {
+<span class="nc" id="L28">        return &quot;signup&quot;;</span>
+    }
+
+    @PostMapping(&quot;/signup&quot;)
+    public String processSignup(@RequestParam String username,
+                                @RequestParam String email,
+                                @RequestParam String password) {
+<span class="fc" id="L35">        User user = new User();</span>
+<span class="fc" id="L36">        user.setUsername(username);</span>
+<span class="fc" id="L37">        user.setEmail(email);</span>
+<span class="fc" id="L38">        user.setPassword(passwordEncoder.encode(password));</span>
+<span class="fc" id="L39">        user.setBalance(BigDecimal.ZERO);</span>
+
+<span class="fc" id="L41">        userService.saveUser(user);</span>
+<span class="fc" id="L42">        return &quot;redirect:/login&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

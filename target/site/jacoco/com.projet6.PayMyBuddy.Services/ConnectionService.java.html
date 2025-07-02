@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConnectionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PayMyBuddy</a> &gt; <a href="index.source.html" class="el_package">com.projet6.PayMyBuddy.Services</a> &gt; <span class="el_source">ConnectionService.java</span></div><h1>ConnectionService.java</h1><pre class="source lang-java linenums">package com.projet6.PayMyBuddy.Services;
+
+import com.projet6.PayMyBuddy.Model.Connection;
+import com.projet6.PayMyBuddy.Model.User;
+import com.projet6.PayMyBuddy.Repository.ConnectionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+
+import java.util.List;
+import java.util.Optional;
+
+//Vérifie et crée les liens de connexion entre utilisateurs (amis)
+
+@Service
+<span class="fc" id="L17">public class ConnectionService {</span>
+    @Autowired
+    private ConnectionRepository connectionRepository;
+
+    public Iterable&lt;Connection&gt; getConnections() {
+<span class="fc" id="L22">        return connectionRepository.findAll();</span>
+    }
+
+    public List&lt;Connection&gt; getConnectionsByUser(User user) {
+<span class="fc" id="L26">        return connectionRepository.findByUser(user);</span>
+    }
+
+    @Transactional
+    public Connection saveConnection(Connection connection) {
+<span class="fc" id="L31">        return connectionRepository.save(connection);</span>
+    }
+
+    @Transactional
+    public void deleteConnection(Connection connection) {
+<span class="fc" id="L36">        connectionRepository.delete(connection);</span>
+<span class="fc" id="L37">    }</span>
+
+    public String handleAddFriend(String friendEmail, User currentUser, Model model, UserService userService) {
+<span class="fc" id="L40">        Optional&lt;User&gt; friendOpt = userService.getUserByEmail(friendEmail);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (friendOpt.isEmpty()) {</span>
+<span class="fc" id="L42">            model.addAttribute(&quot;message&quot;, &quot;Utilisateur introuvable.&quot;);</span>
+<span class="fc" id="L43">            model.addAttribute(&quot;error&quot;, true);</span>
+<span class="fc" id="L44">            return &quot;addfriend&quot;;</span>
+        }
+
+<span class="fc" id="L47">        User friend = friendOpt.get();</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (currentUser.getId() == friend.getId()) {</span>
+<span class="fc" id="L50">            model.addAttribute(&quot;message&quot;, &quot;Impossible de s’ajouter soi-même.&quot;);</span>
+<span class="fc" id="L51">            model.addAttribute(&quot;error&quot;, true);</span>
+<span class="fc" id="L52">            return &quot;addfriend&quot;;</span>
+        }
+
+<span class="fc" id="L55">        boolean alreadyConnected = getConnectionsByUser(currentUser)</span>
+<span class="fc" id="L56">                .stream()</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">                .anyMatch(conn -&gt; conn.getFriend().getId() == friend.getId());</span>
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (alreadyConnected) {</span>
+<span class="fc" id="L60">            model.addAttribute(&quot;message&quot;, &quot;Vous êtes déjà connecté à cet utilisateur.&quot;);</span>
+<span class="fc" id="L61">            model.addAttribute(&quot;error&quot;, true);</span>
+        } else {
+<span class="nc" id="L63">            Connection connection = new Connection();</span>
+<span class="nc" id="L64">            connection.setUser(currentUser);</span>
+<span class="nc" id="L65">            connection.setFriend(friend);</span>
+<span class="nc" id="L66">            saveConnection(connection);</span>
+<span class="nc" id="L67">            model.addAttribute(&quot;message&quot;, &quot;Ami ajouté avec succès !&quot;);</span>
+<span class="nc" id="L68">            model.addAttribute(&quot;success&quot;, true);</span>
+        }
+
+<span class="fc" id="L71">        return &quot;addfriend&quot;;</span>
+    }
+
+    @Transactional
+    public Optional&lt;Connection&gt; createConnectionIfValid(Connection connection) {
+<span class="nc bnc" id="L76" title="All 4 branches missed.">        if (connection.getUser() == null || connection.getFriend() == null) {</span>
+<span class="nc" id="L77">            return Optional.empty();</span>
+        }
+
+<span class="nc" id="L80">        return Optional.of(connectionRepository.save(connection));</span>
+    }
+
+    public Connection addConnection(User user1, User user2) {
+<span class="nc" id="L84">        Connection connection = new Connection();</span>
+<span class="nc" id="L85">        connection.setUser(user1);</span>
+<span class="nc" id="L86">        connection.setFriend(user2);</span>
+<span class="nc" id="L87">        return connectionRepository.save(connection);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

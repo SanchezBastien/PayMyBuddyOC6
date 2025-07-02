@@ -1,42 +1,80 @@
 package com.projet6.PayMyBuddy;
 
 import com.projet6.PayMyBuddy.Controller.ConnectionController;
+import com.projet6.PayMyBuddy.Model.Connection;
+import com.projet6.PayMyBuddy.Model.User;
 import com.projet6.PayMyBuddy.Services.ConnectionService;
 import com.projet6.PayMyBuddy.Services.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(ConnectionController.class)
-public class ConnectionControllerTest {
+import java.util.Collections;
+import java.util.List;
 
-    @Autowired
-    private MockMvc mockMvc;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-    @MockBean
+class ConnectionControllerTest {
+    @Mock
     private ConnectionService connectionService;
-    @MockBean
+
+    @Mock
     private UserService userService;
-    @MockBean
-    private PasswordEncoder passwordEncoder;
-    @Test
-    public void testGetEndpoint() throws Exception {
-        mockMvc.perform(get("/connection"))
-                .andExpect(status().isOk());
+
+    @InjectMocks
+    private ConnectionController connectionController;
+
+    public ConnectionControllerTest() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testPostEndpoint() throws Exception {
-        mockMvc.perform(post("/connection")
-                        .param("param1", "value1"))
-                .andExpect(status().isOk());
+    void testGetAllConnections() {
+        when(connectionService.getConnections()).thenReturn(Collections.emptyList());
+        Iterable<Connection> result = connectionController.getAllConnections();
+        assertNotNull(result);
+    }
+
+    @Test
+    void testGetConnectionsByUserEmail() {
+        when(connectionService.getConnectionsByUser(any())).thenReturn(Collections.emptyList());
+        List<Connection> result = connectionController.getConnectionsByUserEmail("email");
+        assertNotNull(result);
+    }
+
+    @Test
+    void testCreateConnection() {
+        // Crée deux utilisateurs fictifs
+        User user = new User();
+        user.setId(1);
+        user.setEmail("a@b.com");
+
+        User friend = new User();
+        friend.setId(2);
+        friend.setEmail("b@c.com");
+
+        // Crée la connexion complète
+        Connection connection = new Connection();
+        connection.setUser(user);
+        connection.setFriend(friend);
+
+        when(connectionService.createConnectionIfValid(any(Connection.class)))
+                .thenReturn(java.util.Optional.of(connection));
+
+        // Appelle le contrôleur
+        ResponseEntity<Connection> response = connectionController.createConnection(connection);
+
+        // Doit retourner 200
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testDeleteConnection() {
+        doNothing().when(connectionService).deleteConnection(any(Connection.class));
+        ResponseEntity<Void> response = connectionController.deleteConnection(new Connection());
+        assertEquals(200, response.getStatusCodeValue());
     }
 }

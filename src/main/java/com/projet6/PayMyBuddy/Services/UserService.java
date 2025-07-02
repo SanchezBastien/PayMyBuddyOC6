@@ -40,4 +40,8 @@ public class UserService {
     public void deleteUserById(Integer id) {
         userRepository.deleteById(id);
     }
+
+    public Optional<User> findUserByEmail(String mail) {
+        return userRepository.findByEmail(mail);
+    }
 }

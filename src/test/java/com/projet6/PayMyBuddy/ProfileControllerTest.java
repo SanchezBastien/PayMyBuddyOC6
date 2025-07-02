@@ -2,38 +2,56 @@ package com.projet6.PayMyBuddy;
 
 import com.projet6.PayMyBuddy.Controller.ProfileController;
 import com.projet6.PayMyBuddy.Services.UserService;
+import com.projet6.PayMyBuddy.Model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.ui.Model;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(ProfileController.class)
-public class ProfileControllerTest {
+import java.security.Principal;
+import java.util.Optional;
 
-    @Autowired
-    private MockMvc mockMvc;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
-    @MockBean
+class ProfileControllerTest {
+
+    @Mock
     private UserService userService;
-    @MockBean
-    private PasswordEncoder passwordEncoder;
-    @Test
-    public void testGetEndpoint() throws Exception {
-        mockMvc.perform(get("/profile"))
-                .andExpect(status().isOk());
+    @Mock
+    private Model model;
+    @Mock
+    private Principal principal;
+    @InjectMocks
+    private ProfileController profileController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testPostEndpoint() throws Exception {
-        mockMvc.perform(post("/profile")
-                        .param("param1", "value1"))
-                .andExpect(status().isOk());
+    void testShowProfileSuccess() {
+        when(principal.getName()).thenReturn("user@email.com");
+        User user = new User();
+        user.setEmail("user@email.com");
+        when(userService.getUserByEmail("user@email.com")).thenReturn(Optional.of(user));
+
+        String view = profileController.showProfile(model, principal);
+        assertEquals("profile", view);
+        verify(model).addAttribute(eq("user"), any(User.class));
+    }
+
+    @Test
+    void testShowProfileUserNotFound() {
+        when(principal.getName()).thenReturn("user@email.com");
+        when(userService.getUserByEmail("user@email.com")).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            profileController.showProfile(model, principal);
+        });
     }
 }

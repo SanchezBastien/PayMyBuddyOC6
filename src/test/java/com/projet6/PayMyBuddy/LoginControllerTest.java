@@ -3,39 +3,31 @@ package com.projet6.PayMyBuddy;
 import com.projet6.PayMyBuddy.Controller.LoginController;
 import com.projet6.PayMyBuddy.Services.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false) // Pour ignorer les filtres Spring Security
-@WebMvcTest(LoginController.class)
-public class LoginControllerTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Autowired
-    private MockMvc mockMvc;
+class LoginControllerTest {
 
-    @MockBean
+    @Mock
     private UserService userService;
 
-    @MockBean
+    @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Test
-    public void testGetEndpoint() throws Exception {
-        mockMvc.perform(get("/login"))
-                .andExpect(status().isOk());
+    @InjectMocks
+    private LoginController loginController;
+
+    public LoginControllerTest() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testPostEndpoint() throws Exception {
-        mockMvc.perform(post("/login")
-                        .param("param1", "value1"))
-                .andExpect(status().isOk());
+    void testShowLoginForm() {
+        String result = loginController.showLoginForm();
+        assertEquals("login", result);
     }
 }

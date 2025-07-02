@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PayMyBuddy</a> &gt; <a href="index.source.html" class="el_package">com.projet6.PayMyBuddy.Model</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.projet6.PayMyBuddy.Model;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+//Représente un utilisateur avec ses attributs (nom, email, mot de passe, solde, etc.)
+
+@Entity
+@Table(name = &quot;user&quot;)
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String password;
+
+<span class="fc" id="L26">    @Column(precision = 10, scale = 2)</span>
+    private BigDecimal balance = BigDecimal.ZERO;
+
+
+    @OneToMany(mappedBy = &quot;sender&quot;)
+    private List&lt;Transaction&gt; sentTransactions;
+
+    @OneToMany(mappedBy = &quot;receiver&quot;)
+    private List&lt;Transaction&gt; receivedTransactions;
+
+    @OneToMany(mappedBy = &quot;user&quot;)
+    private List&lt;Connection&gt; connections;
+
+    @OneToMany(mappedBy = &quot;friend&quot;)
+    private List&lt;Connection&gt; friends;
+
+
+
+    public int getId() {
+<span class="fc" id="L45">        return id;</span>
+    }
+
+    public void setId(int id) {
+<span class="fc" id="L49">        this.id = id;</span>
+<span class="fc" id="L50">    }</span>
+
+    public String getUsername() {
+<span class="fc" id="L53">        return username;</span>
+    }
+
+    public void setUsername(String username) {
+<span class="fc" id="L57">        this.username = username;</span>
+<span class="fc" id="L58">    }</span>
+
+    public String getEmail() {
+<span class="fc" id="L61">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="fc" id="L65">        this.email = email;</span>
+<span class="fc" id="L66">    }</span>
+
+    public String getPassword() {
+<span class="fc" id="L69">        return password;</span>
+    }
+
+    public void setPassword(String password) {
+<span class="fc" id="L73">        this.password = password;</span>
+<span class="fc" id="L74">    }</span>
+
+    public List&lt;Transaction&gt; getSentTransactions() {
+<span class="nc" id="L77">        return sentTransactions;</span>
+    }
+
+    public void setSentTransactions(List&lt;Transaction&gt; sentTransactions) {
+<span class="nc" id="L81">        this.sentTransactions = sentTransactions;</span>
+<span class="nc" id="L82">    }</span>
+
+    public List&lt;Transaction&gt; getReceivedTransactions() {
+<span class="nc" id="L85">        return receivedTransactions;</span>
+    }
+
+    public void setReceivedTransactions(List&lt;Transaction&gt; receivedTransactions) {
+<span class="nc" id="L89">        this.receivedTransactions = receivedTransactions;</span>
+<span class="nc" id="L90">    }</span>
+
+    public List&lt;Connection&gt; getConnections() {
+<span class="nc" id="L93">        return connections;</span>
+    }
+
+    public void setConnections(List&lt;Connection&gt; connections) {
+<span class="nc" id="L97">        this.connections = connections;</span>
+<span class="nc" id="L98">    }</span>
+
+    public List&lt;Connection&gt; getFriends() {
+<span class="nc" id="L101">        return friends;</span>
+    }
+
+    public void setFriends(List&lt;Connection&gt; friends) {
+<span class="nc" id="L105">        this.friends = friends;</span>
+<span class="nc" id="L106">    }</span>
+
+<span class="fc" id="L108">    public User() {</span>
+<span class="fc" id="L109">    }</span>
+
+    public BigDecimal getBalance() {
+<span class="fc" id="L112">        return balance;</span>
+    }
+
+    public void setBalance(BigDecimal balance) {
+<span class="fc" id="L116">        this.balance = balance;</span>
+<span class="fc" id="L117">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

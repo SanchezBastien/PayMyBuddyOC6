@@ -79,4 +79,11 @@ public class ConnectionService {
 
         return Optional.of(connectionRepository.save(connection));
     }
+
+    public Connection addConnection(User user1, User user2) {
+        Connection connection = new Connection();
+        connection.setUser(user1);
+        connection.setFriend(user2);
+        return connectionRepository.save(connection);
+    }
 }
