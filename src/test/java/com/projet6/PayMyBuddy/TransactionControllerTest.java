@@ -9,16 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.ResponseEntity;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TransactionControllerTest {
-
-    @InjectMocks
-    private TransactionController transactionController;
+class TransactionControllerTest {
 
     @Mock
     private TransactionService transactionService;
@@ -26,53 +26,106 @@ public class TransactionControllerTest {
     @Mock
     private UserService userService;
 
+    @InjectMocks
+    private TransactionController transactionController;
+
+    private AutoCloseable closeable;
+
+    private User user;
+    private Transaction transaction;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+        user = new User();
+        user.setId(1);
+        user.setEmail("user@test.com");
+
+        transaction = new Transaction();
+        transaction.setId(10);
+        transaction.setSender(user);
+        transaction.setAmount(new BigDecimal("100.11"));
     }
 
     @Test
-    void getAllTransactions_ShouldReturnAllTransactions() {
-        // Given
-        List<Transaction> mockList = Arrays.asList(new Transaction(), new Transaction());
-        when(transactionService.getTransactions()).thenReturn(mockList);
+    void testGetAllTransactions() {
+        List<Transaction> transactions = Arrays.asList(transaction);
+        when(transactionService.getTransactions()).thenReturn(transactions);
 
-        // When
         Iterable<Transaction> result = transactionController.getAllTransactions();
 
-        // Then
-        assertEquals(mockList, result);
-        verify(transactionService).getTransactions();
+        assertNotNull(result);
+        assertTrue(result.iterator().hasNext());
+        assertEquals(transaction, result.iterator().next());
+        verify(transactionService, times(1)).getTransactions();
     }
-    
+
     @Test
-    void getTransactionsBySenderEmail_ShouldReturnEmptyList_IfUserNotFound() {
-        // Given
-        String email = "notfound@email.com";
-        when(userService.getUserByEmail(email)).thenReturn(Optional.empty());
+    void testGetTransactionsBySenderEmail_Found() {
+        List<Transaction> transactions = Arrays.asList(transaction);
+        when(userService.getUserByEmail("user@test.com")).thenReturn(Optional.of(user));
+        when(transactionService.getTransactionBySender(user)).thenReturn(transactions);
 
-        // When
-        List<Transaction> result = transactionController.getTransactionsBySenderEmail(email);
+        List<Transaction> result = transactionController.getTransactionsBySenderEmail("user@test.com");
 
-        // Then
-        assertEquals(Collections.emptyList(), result);
-        verify(userService).getUserByEmail(email);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(transaction, result.get(0));
+        verify(userService, times(1)).getUserByEmail("user@test.com");
+        verify(transactionService, times(1)).getTransactionBySender(user);
+    }
+
+    @Test
+    void testGetTransactionsBySenderEmail_NotFound() {
+        when(userService.getUserByEmail("unknown@test.com")).thenReturn(Optional.empty());
+
+        List<Transaction> result = transactionController.getTransactionsBySenderEmail("unknown@test.com");
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(userService, times(1)).getUserByEmail("unknown@test.com");
         verify(transactionService, never()).getTransactionBySender(any());
     }
 
     @Test
-    void createTransaction_ShouldSaveAndReturnTransaction() {
-        // Given
-        Transaction tx = new Transaction();
-        Transaction saved = new Transaction();
-        when(transactionService.saveTransaction(tx)).thenReturn(saved);
+    void testCreateTransaction() {
+        when(transactionService.saveTransaction(transaction)).thenReturn(transaction);
 
-        // When
-        ResponseEntity<Transaction> response = transactionController.createTransaction(tx);
+        ResponseEntity<Transaction> response = transactionController.createTransaction(transaction);
 
-        // Then
-        assertEquals(saved, response.getBody());
+        assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
-        verify(transactionService).saveTransaction(tx);
+        assertEquals(transaction, response.getBody());
+        verify(transactionService, times(1)).saveTransaction(transaction);
+    }
+
+    @Test
+    void testUpdateTransaction_Found() {
+        Transaction updatedDetails = new Transaction();
+        updatedDetails.setAmount(new BigDecimal("200.0"));
+        updatedDetails.setSender(user);
+
+        when(transactionService.getTransactionById(10)).thenReturn(Optional.of(transaction));
+        when(transactionService.saveTransaction(any(Transaction.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ResponseEntity<Transaction> response = transactionController.updateTransaction(10, updatedDetails);
+
+        assertNotNull(response);
+        assertEquals(200.0, response.getStatusCodeValue());
+        assertEquals(new BigDecimal("200.0"), response.getBody().getAmount());
+        verify(transactionService, times(1)).getTransactionById(10);
+        verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
+    }
+
+    @Test
+    void testUpdateTransaction_NotFound() {
+        when(transactionService.getTransactionById(99)).thenReturn(Optional.empty());
+
+        ResponseEntity<Transaction> response = transactionController.updateTransaction(99, new Transaction());
+
+        assertEquals(404, response.getStatusCodeValue());
+        assertNull(response.getBody());
+        verify(transactionService, times(1)).getTransactionById(99);
+        verify(transactionService, never()).saveTransaction(any());
     }
 }

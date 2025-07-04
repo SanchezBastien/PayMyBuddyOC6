@@ -12,57 +12,57 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(&quot;/users&quot;)
-<span class="nc" id="L15">public class UserController {</span>
+<span class="fc" id="L15">public class UserController {</span>
 
     @Autowired
     private UserService userService;
 
     @GetMapping
     public Iterable&lt;User&gt; getAllUsers() {
-<span class="nc" id="L22">        return userService.getUsers();</span>
+<span class="fc" id="L22">        return userService.getUsers();</span>
     }
 
     @GetMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;User&gt; getUserById(@PathVariable Integer id) {
-<span class="nc" id="L27">        return userService.getUserById(id)</span>
-<span class="nc" id="L28">                .map(ResponseEntity::ok)</span>
-<span class="nc" id="L29">                .orElse(ResponseEntity.notFound().build());</span>
+<span class="fc" id="L27">        return userService.getUserById(id)</span>
+<span class="fc" id="L28">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L29">                .orElse(ResponseEntity.notFound().build());</span>
     }
 
     @GetMapping(&quot;/by-email&quot;)
     public ResponseEntity&lt;User&gt; getUserByEmail(@RequestParam String email) {
-<span class="nc" id="L34">        Optional&lt;User&gt; user = userService.getUserByEmail(email);</span>
-<span class="nc" id="L35">        return user.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</span>
+<span class="fc" id="L34">        Optional&lt;User&gt; user = userService.getUserByEmail(email);</span>
+<span class="fc" id="L35">        return user.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</span>
     }
 
     @PostMapping
     public ResponseEntity&lt;User&gt; createUser(@RequestBody User user) {
-<span class="nc" id="L40">        User savedUser = userService.saveUser(user);</span>
-<span class="nc" id="L41">        return ResponseEntity.ok(savedUser);</span>
+<span class="fc" id="L40">        User savedUser = userService.saveUser(user);</span>
+<span class="fc" id="L41">        return ResponseEntity.ok(savedUser);</span>
     }
 
     @PutMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;User&gt; updateUser(@PathVariable Integer id, @RequestBody User userDetails) {
-<span class="nc" id="L46">        Optional&lt;User&gt; optionalUser = userService.getUserById(id);</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (optionalUser.isPresent()) {</span>
-<span class="nc" id="L48">            User user = optionalUser.get();</span>
-<span class="nc" id="L49">            user.setUsername(userDetails.getUsername());</span>
-<span class="nc" id="L50">            user.setEmail(userDetails.getEmail());</span>
-<span class="nc" id="L51">            user.setPassword(userDetails.getPassword());</span>
-<span class="nc" id="L52">            return ResponseEntity.ok(userService.saveUser(user));</span>
+<span class="fc" id="L46">        Optional&lt;User&gt; optionalUser = userService.getUserById(id);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (optionalUser.isPresent()) {</span>
+<span class="fc" id="L48">            User user = optionalUser.get();</span>
+<span class="fc" id="L49">            user.setUsername(userDetails.getUsername());</span>
+<span class="fc" id="L50">            user.setEmail(userDetails.getEmail());</span>
+<span class="fc" id="L51">            user.setPassword(userDetails.getPassword());</span>
+<span class="fc" id="L52">            return ResponseEntity.ok(userService.saveUser(user));</span>
         } else {
-<span class="nc" id="L54">            return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L54">            return ResponseEntity.notFound().build();</span>
         }
     }
 
     @DeleteMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Void&gt; deleteUser(@PathVariable Integer id) {
-<span class="nc" id="L60">        Optional&lt;User&gt; user = userService.getUserById(id);</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (user.isPresent()) {</span>
-<span class="nc" id="L62">            userService.deleteUserById(id);</span>
-<span class="nc" id="L63">            return ResponseEntity.ok().build();</span>
+<span class="fc" id="L60">        Optional&lt;User&gt; user = userService.getUserById(id);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (user.isPresent()) {</span>
+<span class="fc" id="L62">            userService.deleteUserById(id);</span>
+<span class="fc" id="L63">            return ResponseEntity.ok().build();</span>
         } else {
-<span class="nc" id="L65">            return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L65">            return ResponseEntity.notFound().build();</span>
         }
     }
 }

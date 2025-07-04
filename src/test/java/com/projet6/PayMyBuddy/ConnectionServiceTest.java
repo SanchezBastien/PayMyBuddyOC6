@@ -8,12 +8,11 @@ import com.projet6.PayMyBuddy.Services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-
 import org.springframework.ui.Model;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class ConnectionServiceTest {
@@ -21,7 +20,6 @@ class ConnectionServiceTest {
     @Mock
     private ConnectionRepository connectionRepository;
 
-    @Spy
     @InjectMocks
     private ConnectionService connectionService;
 
@@ -31,95 +29,121 @@ class ConnectionServiceTest {
     @Mock
     private Model model;
 
-    private User currentUser;
-    private User friend;
-    private Connection connection;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        currentUser = new User();
-        currentUser.setId(1);
-        currentUser.setEmail("current@buddy.com");
-
-        friend = new User();
-        friend.setId(2);
-        friend.setEmail("friend@buddy.com");
-
-        connection = new Connection();
-        connection.setUser(currentUser);
-        connection.setFriend(friend);
     }
 
     @Test
-    void testGetConnections() {
-        List<Connection> conns = Arrays.asList(connection);
-        when(connectionRepository.findAll()).thenReturn(conns);
+    void getConnections_shouldReturnAllConnections() {
+        List<Connection> connections = Arrays.asList(new Connection(), new Connection());
+        when(connectionRepository.findAll()).thenReturn(connections);
 
         Iterable<Connection> result = connectionService.getConnections();
-        assertNotNull(result);
-        assertEquals(conns, result);
+
+        assertThat(result).containsExactlyElementsOf(connections);
         verify(connectionRepository, times(1)).findAll();
     }
 
     @Test
-    void testGetConnectionsByUser() {
-        List<Connection> conns = Arrays.asList(connection);
-        when(connectionRepository.findByUser(currentUser)).thenReturn(conns);
+    void getConnectionsByUser_shouldReturnConnectionsForUser() {
+        User user = new User();
+        List<Connection> connections = Arrays.asList(new Connection(), new Connection());
+        when(connectionRepository.findByUser(user)).thenReturn(connections);
 
-        List<Connection> result = connectionService.getConnectionsByUser(currentUser);
-        assertEquals(conns, result);
-        verify(connectionRepository, times(1)).findByUser(currentUser);
+        List<Connection> result = connectionService.getConnectionsByUser(user);
+
+        assertThat(result).containsExactlyElementsOf(connections);
+        verify(connectionRepository, times(1)).findByUser(user);
     }
 
     @Test
-    void testSaveConnection() {
+    void saveConnection_shouldSaveAndReturnConnection() {
+        Connection connection = new Connection();
         when(connectionRepository.save(connection)).thenReturn(connection);
-        Connection saved = connectionService.saveConnection(connection);
-        assertNotNull(saved);
-        verify(connectionRepository).save(connection);
+
+        Connection result = connectionService.saveConnection(connection);
+
+        assertThat(result).isEqualTo(connection);
+        verify(connectionRepository, times(1)).save(connection);
     }
 
     @Test
-    void testDeleteConnection() {
+    void deleteConnection_shouldDeleteConnection() {
+        Connection connection = new Connection();
+
         connectionService.deleteConnection(connection);
+
         verify(connectionRepository, times(1)).delete(connection);
     }
 
-    // ----- handleAddFriend -----
-
     @Test
-    void testHandleAddFriend_FriendNotFound() {
-        when(userService.getUserByEmail("no@friend.com")).thenReturn(Optional.empty());
-        String view = connectionService.handleAddFriend("no@friend.com", currentUser, model, userService);
-        assertEquals("addfriend", view);
+    void handleAddFriend_userNotFound_shouldReturnAddFriendWithError() {
+        String friendEmail = "test@test.com";
+        User currentUser = new User();
+        when(userService.getUserByEmail(friendEmail)).thenReturn(Optional.empty());
+
+        String result = connectionService.handleAddFriend(friendEmail, currentUser, model, userService);
+
         verify(model).addAttribute("message", "Utilisateur introuvable.");
         verify(model).addAttribute("error", true);
+        assertThat(result).isEqualTo("addfriend");
     }
 
     @Test
-    void testHandleAddFriend_AddSelf() {
-        when(userService.getUserByEmail("current@buddy.com")).thenReturn(Optional.of(currentUser));
-        String view = connectionService.handleAddFriend("current@buddy.com", currentUser, model, userService);
-        assertEquals("addfriend", view);
+    void handleAddFriend_addSelf_shouldReturnAddFriendWithError() {
+        String friendEmail = "me@test.com";
+        User currentUser = new User();
+        currentUser.setId(1);
+        User friend = new User();
+        friend.setId(1);
+        when(userService.getUserByEmail(friendEmail)).thenReturn(Optional.of(friend));
+
+        String result = connectionService.handleAddFriend(friendEmail, currentUser, model, userService);
+
         verify(model).addAttribute("message", "Impossible de s’ajouter soi-même.");
         verify(model).addAttribute("error", true);
+        assertThat(result).isEqualTo("addfriend");
     }
 
     @Test
-    void testHandleAddFriend_AlreadyConnected() {
-        when(userService.getUserByEmail("friend@buddy.com")).thenReturn(Optional.of(friend));
-        // Simule qu'on est déjà connecté à cet ami
-        Connection already = new Connection();
-        already.setUser(currentUser);
-        already.setFriend(friend);
-        when(connectionRepository.findByUser(currentUser)).thenReturn(List.of(already));
-        // Redéfinir getConnectionsByUser pour retourner ce mock
-        doReturn(List.of(already)).when(connectionService).getConnectionsByUser(currentUser);
+    void handleAddFriend_alreadyConnected_shouldReturnAddFriendWithError() {
+        String friendEmail = "ami@test.com";
+        User currentUser = new User();
+        currentUser.setId(1);
+        User friend = new User();
+        friend.setId(2);
+        when(userService.getUserByEmail(friendEmail)).thenReturn(Optional.of(friend));
+        // On simule une connexion déjà existante
+        Connection existingConnection = new Connection();
+        existingConnection.setUser(currentUser);
+        existingConnection.setFriend(friend);
+        List<Connection> connections = Collections.singletonList(existingConnection);
+        when(connectionService.getConnectionsByUser(currentUser)).thenReturn(connections);
 
-        String view = connectionService.handleAddFriend("friend@buddy.com", currentUser, model, userService);
-        assertEquals("addfriend", view);
+        String result = connectionService.handleAddFriend(friendEmail, currentUser, model, userService);
+
         verify(model).addAttribute("message", "Vous êtes déjà connecté à cet utilisateur.");
         verify(model).addAttribute("error", true);
+        assertThat(result).isEqualTo("addfriend");
+    }
+
+    @Test
+    void handleAddFriend_newFriend_shouldSaveAndReturnSuccess() {
+        String friendEmail = "newfriend@test.com";
+        User currentUser = new User();
+        currentUser.setId(1);
+        User friend = new User();
+        friend.setId(2);
+        when(userService.getUserByEmail(friendEmail)).thenReturn(Optional.of(friend));
+        // On simule aucune connexion existante
+        when(connectionService.getConnectionsByUser(currentUser)).thenReturn(Collections.emptyList());
+
+        String result = connectionService.handleAddFriend(friendEmail, currentUser, model, userService);
+
+        verify(connectionRepository).save(any(Connection.class));
+        verify(model).addAttribute("message", "Ami ajouté avec succès !");
+        verify(model).addAttribute("success", true);
+        assertThat(result).isEqualTo("addfriend");
     }
 }

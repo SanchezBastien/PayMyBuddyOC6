@@ -56,16 +56,16 @@ import java.util.Optional;
 <span class="fc" id="L56">                .stream()</span>
 <span class="pc bpc" id="L57" title="1 of 2 branches missed.">                .anyMatch(conn -&gt; conn.getFriend().getId() == friend.getId());</span>
 
-<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (alreadyConnected) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (alreadyConnected) {</span>
 <span class="fc" id="L60">            model.addAttribute(&quot;message&quot;, &quot;Vous êtes déjà connecté à cet utilisateur.&quot;);</span>
 <span class="fc" id="L61">            model.addAttribute(&quot;error&quot;, true);</span>
         } else {
-<span class="nc" id="L63">            Connection connection = new Connection();</span>
-<span class="nc" id="L64">            connection.setUser(currentUser);</span>
-<span class="nc" id="L65">            connection.setFriend(friend);</span>
-<span class="nc" id="L66">            saveConnection(connection);</span>
-<span class="nc" id="L67">            model.addAttribute(&quot;message&quot;, &quot;Ami ajouté avec succès !&quot;);</span>
-<span class="nc" id="L68">            model.addAttribute(&quot;success&quot;, true);</span>
+<span class="fc" id="L63">            Connection connection = new Connection();</span>
+<span class="fc" id="L64">            connection.setUser(currentUser);</span>
+<span class="fc" id="L65">            connection.setFriend(friend);</span>
+<span class="fc" id="L66">            saveConnection(connection);</span>
+<span class="fc" id="L67">            model.addAttribute(&quot;message&quot;, &quot;Ami ajouté avec succès !&quot;);</span>
+<span class="fc" id="L68">            model.addAttribute(&quot;success&quot;, true);</span>
         }
 
 <span class="fc" id="L71">        return &quot;addfriend&quot;;</span>

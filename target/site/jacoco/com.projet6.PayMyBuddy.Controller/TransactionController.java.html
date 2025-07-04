@@ -46,16 +46,16 @@ import java.util.Optional;
 
     @PutMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Transaction&gt; updateTransaction(@PathVariable Integer id, @RequestBody Transaction transactionDetails) {
-<span class="nc" id="L49">        Optional&lt;Transaction&gt; optionalTransaction = transactionService.getTransactionById(id);</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (optionalTransaction.isPresent()) {</span>
-<span class="nc" id="L51">            Transaction transaction = optionalTransaction.get();</span>
-<span class="nc" id="L52">            transaction.setSender(transactionDetails.getSender());</span>
-<span class="nc" id="L53">            transaction.setReceiver(transactionDetails.getReceiver());</span>
-<span class="nc" id="L54">            transaction.setAmount(transactionDetails.getAmount());</span>
-<span class="nc" id="L55">            transaction.setDescription(transactionDetails.getDescription());</span>
-<span class="nc" id="L56">            return ResponseEntity.ok(transactionService.saveTransaction(transaction));</span>
+<span class="fc" id="L49">        Optional&lt;Transaction&gt; optionalTransaction = transactionService.getTransactionById(id);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (optionalTransaction.isPresent()) {</span>
+<span class="fc" id="L51">            Transaction transaction = optionalTransaction.get();</span>
+<span class="fc" id="L52">            transaction.setSender(transactionDetails.getSender());</span>
+<span class="fc" id="L53">            transaction.setReceiver(transactionDetails.getReceiver());</span>
+<span class="fc" id="L54">            transaction.setAmount(transactionDetails.getAmount());</span>
+<span class="fc" id="L55">            transaction.setDescription(transactionDetails.getDescription());</span>
+<span class="fc" id="L56">            return ResponseEntity.ok(transactionService.saveTransaction(transaction));</span>
         } else {
-<span class="nc" id="L58">            return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L58">            return ResponseEntity.notFound().build();</span>
         }
     }
 

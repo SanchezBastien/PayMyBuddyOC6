@@ -22,26 +22,26 @@ import java.util.Optional;
     private UserService userService;
 
     public Iterable&lt;Transaction&gt; getTransactions() {
-<span class="nc" id="L25">        return transactionRepository.findAll();</span>
+<span class="fc" id="L25">        return transactionRepository.findAll();</span>
     }
 
     public Optional&lt;Transaction&gt; getTransactionById(Integer id) {
-<span class="nc" id="L29">        return transactionRepository.findById(id);</span>
+<span class="fc" id="L29">        return transactionRepository.findById(id);</span>
     }
 
     public List&lt;Transaction&gt; getTransactionBySender(User sender) {
-<span class="nc" id="L33">        return transactionRepository.findBySender(sender);</span>
+<span class="fc" id="L33">        return transactionRepository.findBySender(sender);</span>
     }
 
     @Transactional
     public Transaction saveTransaction(Transaction transaction) {
-<span class="nc" id="L38">        return transactionRepository.save(transaction);</span>
+<span class="fc" id="L38">        return transactionRepository.save(transaction);</span>
     }
 
     @Transactional
     public void deleteTransactionById(Integer id) {
-<span class="nc" id="L43">        transactionRepository.deleteById(id);</span>
-<span class="nc" id="L44">    }</span>
+<span class="fc" id="L43">        transactionRepository.deleteById(id);</span>
+<span class="fc" id="L44">    }</span>
 
     @Transactional
     public Transaction transfer(User sender, User receiver, BigDecimal amount, String description) {

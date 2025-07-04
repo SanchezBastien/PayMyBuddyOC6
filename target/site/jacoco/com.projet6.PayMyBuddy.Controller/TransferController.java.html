@@ -18,7 +18,7 @@ import java.util.List;
 //Gère les transferts d’argent entre utilisateurs connectés
 
 @Controller
-<span class="nc" id="L21">public class TransferController {</span>
+<span class="fc" id="L21">public class TransferController {</span>
 
     @Autowired
     private TransactionService transactionService;
@@ -31,12 +31,12 @@ import java.util.List;
 
     @GetMapping(&quot;/transfer&quot;)
     public String showTransferPage(Model model, Principal principal) {
-<span class="nc" id="L34">        User currentUser = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
+<span class="fc" id="L34">        User currentUser = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
 
-<span class="nc" id="L36">        model.addAttribute(&quot;connections&quot;, connectionService.getConnectionsByUser(currentUser));</span>
-<span class="nc" id="L37">        model.addAttribute(&quot;transactions&quot;, transactionService.getTransactionBySender(currentUser));</span>
+<span class="fc" id="L36">        model.addAttribute(&quot;connections&quot;, connectionService.getConnectionsByUser(currentUser));</span>
+<span class="fc" id="L37">        model.addAttribute(&quot;transactions&quot;, transactionService.getTransactionBySender(currentUser));</span>
 
-<span class="nc" id="L39">        return &quot;transfer&quot;;</span>
+<span class="fc" id="L39">        return &quot;transfer&quot;;</span>
     }
 
     @PostMapping(&quot;/transfer&quot;)
@@ -44,11 +44,11 @@ import java.util.List;
                                   @RequestParam String description,
                                   @RequestParam BigDecimal amount,
                                   Principal principal) {
-<span class="nc" id="L47">        User sender = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
-<span class="nc" id="L48">        User receiver = userService.getUserById(receiverId).orElseThrow();</span>
+<span class="fc" id="L47">        User sender = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
+<span class="fc" id="L48">        User receiver = userService.getUserById(receiverId).orElseThrow();</span>
 
-<span class="nc" id="L50">        transactionService.transfer(sender, receiver, amount, description);</span>
-<span class="nc" id="L51">        return &quot;redirect:/transfer&quot;;</span>
+<span class="fc" id="L50">        transactionService.transfer(sender, receiver, amount, description);</span>
+<span class="fc" id="L51">        return &quot;redirect:/transfer&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
