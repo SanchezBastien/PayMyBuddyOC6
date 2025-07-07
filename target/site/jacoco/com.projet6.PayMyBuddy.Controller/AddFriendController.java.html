@@ -11,10 +11,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-//Permet d'ajouter un ami à la liste de connexions d'un utilisateur
-
+/**
+ * Contrôleur gérant l’ajout d’un ami (connexion) pour l’utilisateur courant.
+ *
+ * &lt;p&gt;
+ * Permet d’afficher le formulaire d’ajout d’ami et de traiter la soumission pour
+ * ajouter un nouvel ami à la liste de connexions de l’utilisateur connecté.
+ * &lt;/p&gt;
+ */
 @Controller
-<span class="fc" id="L17">public class AddFriendController {</span>
+<span class="fc" id="L23">public class AddFriendController {</span>
 
     @Autowired
     private UserService userService;
@@ -22,15 +28,29 @@ import java.security.Principal;
     @Autowired
     private ConnectionService connectionService;
 
+    /**
+     * Affiche le formulaire d’ajout d’un ami.
+     * @return Le nom de la vue pour l’ajout d’ami (&quot;addfriend&quot;).
+     */
     @GetMapping(&quot;/addfriend&quot;)
     public String showAddFriendForm() {
-<span class="fc" id="L27">        return &quot;addfriend&quot;;</span>
+<span class="fc" id="L37">        return &quot;addfriend&quot;;</span>
     }
 
+    /**
+     * Traite la soumission du formulaire d’ajout d’ami.
+     * Récupère l’utilisateur courant et tente d’ajouter l’ami correspondant à l’email fourni
+     * dans la liste de ses connexions. Utilise {@link ConnectionService#handleAddFriend}
+     * pour la logique métier et retourne la vue correspondante.
+     * @param friendEmail L’email de l’ami à ajouter.
+     * @param principal   Les informations d’authentification de l’utilisateur courant.
+     * @param model       Le modèle Spring MVC pour passer les messages/résultats à la vue.
+     * @return Le nom de la vue à afficher (succès ou erreur).
+     */
     @PostMapping(&quot;/addfriend&quot;)
     public String processAddFriend(@RequestParam String friendEmail, Principal principal, Model model) {
-<span class="fc" id="L32">        User currentUser = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
-<span class="fc" id="L33">        return connectionService.handleAddFriend(friendEmail, currentUser, model, userService);</span>
+<span class="fc" id="L52">        User currentUser = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
+<span class="fc" id="L53">        return connectionService.handleAddFriend(friendEmail, currentUser, model, userService);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

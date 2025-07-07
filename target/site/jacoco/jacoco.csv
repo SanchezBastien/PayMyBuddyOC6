@@ -1,4 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+PayMyBuddy,com.projet6.PayMyBuddy.logging,RequestLoggingInterceptor,46,7,0,0,5,2,2,2,2,2
 PayMyBuddy,com.projet6.PayMyBuddy.Controller,SignupController,2,29,0,0,1,8,1,2,1,2
 PayMyBuddy,com.projet6.PayMyBuddy.Controller,ProfileController,0,24,0,0,0,5,0,3,0,3
 PayMyBuddy,com.projet6.PayMyBuddy.Controller,UserController,0,92,0,4,0,22,0,10,0,8
@@ -12,8 +13,10 @@ PayMyBuddy,com.projet6.PayMyBuddy.Model,Connection,3,14,0,0,1,6,1,4,1,4
 PayMyBuddy,com.projet6.PayMyBuddy.Model,User,28,41,0,0,12,18,8,11,8,11
 PayMyBuddy,com.projet6.PayMyBuddy.Model,UserConnectionId,55,0,8,0,10,0,8,0,4,0
 PayMyBuddy,com.projet6.PayMyBuddy.Model,Transaction,3,35,0,0,1,15,1,10,1,10
+PayMyBuddy,com.projet6.PayMyBuddy.Config,WebConfig,0,9,0,0,0,3,0,2,0,2
 PayMyBuddy,com.projet6.PayMyBuddy.Config,SecurityConfig,0,62,0,0,0,14,0,6,0,6
 PayMyBuddy,com.projet6.PayMyBuddy.Services,TransactionService,0,82,0,2,0,19,0,8,0,7
 PayMyBuddy,com.projet6.PayMyBuddy.Services,MyUserDetailsService,0,29,0,0,0,7,0,4,0,4
 PayMyBuddy,com.projet6.PayMyBuddy.Services,UserService,10,28,0,0,2,7,2,6,2,6
 PayMyBuddy,com.projet6.PayMyBuddy.Services,ConnectionService,32,123,5,7,7,29,5,10,2,7
+PayMyBuddy,com.projet6.PayMyBuddy.exceptions,GlobalExceptionHandler,17,7,0,0,5,2,2,2,2,2

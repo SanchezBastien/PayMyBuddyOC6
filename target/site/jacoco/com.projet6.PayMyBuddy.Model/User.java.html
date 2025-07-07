@@ -5,115 +5,160 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-//Représente un utilisateur avec ses attributs (nom, email, mot de passe, solde, etc.)
-
+/**
+ * Entité représentant un utilisateur de l’application PayMyBuddy.
+ * Contient les informations principales d’un utilisateur : identifiant, nom d’utilisateur,
+ * email, mot de passe, solde du compte, transactions envoyées et reçues, connexions (amis).
+ */
 @Entity
 @Table(name = &quot;user&quot;)
 public class User {
 
+    /**
+     * Identifiant unique de l’utilisateur.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Nom d’utilisateur (affiché dans l’application).
+     */
     @Column(nullable = false)
     private String username;
 
+    /**
+     * Adresse email unique de l’utilisateur.
+     */
     @Column(nullable = false, unique = true)
     private String email;
 
+    /**
+     * Mot de passe (encodé).
+     */
     private String password;
 
-<span class="fc" id="L26">    @Column(precision = 10, scale = 2)</span>
+    /**
+     * Solde du compte utilisateur.
+     */
+<span class="fc" id="L44">    @Column(precision = 10, scale = 2)</span>
     private BigDecimal balance = BigDecimal.ZERO;
 
-
+    /**
+     * Transactions envoyées par cet utilisateur.
+     */
     @OneToMany(mappedBy = &quot;sender&quot;)
     private List&lt;Transaction&gt; sentTransactions;
 
+    /**
+     * Transactions reçues par cet utilisateur.
+     */
     @OneToMany(mappedBy = &quot;receiver&quot;)
     private List&lt;Transaction&gt; receivedTransactions;
 
+    /**
+     * Connexions (amis ajoutés par cet utilisateur).
+     */
     @OneToMany(mappedBy = &quot;user&quot;)
     private List&lt;Connection&gt; connections;
 
+    /**
+     * Utilisateurs ayant ajouté cet utilisateur en tant qu’ami.
+     */
     @OneToMany(mappedBy = &quot;friend&quot;)
     private List&lt;Connection&gt; friends;
 
-
-
+    /** @return L’identifiant de l’utilisateur. */
     public int getId() {
-<span class="fc" id="L45">        return id;</span>
+<span class="fc" id="L73">        return id;</span>
     }
 
+    /** @param id Définit l’identifiant de l’utilisateur. */
     public void setId(int id) {
-<span class="fc" id="L49">        this.id = id;</span>
-<span class="fc" id="L50">    }</span>
+<span class="fc" id="L78">        this.id = id;</span>
+<span class="fc" id="L79">    }</span>
 
+    /** @return Le nom d’utilisateur. */
     public String getUsername() {
-<span class="fc" id="L53">        return username;</span>
+<span class="fc" id="L83">        return username;</span>
     }
 
+    /** @param username Définit le nom d’utilisateur. */
     public void setUsername(String username) {
-<span class="fc" id="L57">        this.username = username;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L88">        this.username = username;</span>
+<span class="fc" id="L89">    }</span>
 
+    /** @return L’email de l’utilisateur. */
     public String getEmail() {
-<span class="fc" id="L61">        return email;</span>
+<span class="fc" id="L93">        return email;</span>
     }
 
+    /** @param email Définit l’email de l’utilisateur. */
     public void setEmail(String email) {
-<span class="fc" id="L65">        this.email = email;</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L98">        this.email = email;</span>
+<span class="fc" id="L99">    }</span>
 
+    /** @return Le mot de passe de l’utilisateur (encodé). */
     public String getPassword() {
-<span class="fc" id="L69">        return password;</span>
+<span class="fc" id="L103">        return password;</span>
     }
 
+    /** @param password Définit le mot de passe (encodé) de l’utilisateur. */
     public void setPassword(String password) {
-<span class="fc" id="L73">        this.password = password;</span>
-<span class="fc" id="L74">    }</span>
-
-    public List&lt;Transaction&gt; getSentTransactions() {
-<span class="nc" id="L77">        return sentTransactions;</span>
-    }
-
-    public void setSentTransactions(List&lt;Transaction&gt; sentTransactions) {
-<span class="nc" id="L81">        this.sentTransactions = sentTransactions;</span>
-<span class="nc" id="L82">    }</span>
-
-    public List&lt;Transaction&gt; getReceivedTransactions() {
-<span class="nc" id="L85">        return receivedTransactions;</span>
-    }
-
-    public void setReceivedTransactions(List&lt;Transaction&gt; receivedTransactions) {
-<span class="nc" id="L89">        this.receivedTransactions = receivedTransactions;</span>
-<span class="nc" id="L90">    }</span>
-
-    public List&lt;Connection&gt; getConnections() {
-<span class="nc" id="L93">        return connections;</span>
-    }
-
-    public void setConnections(List&lt;Connection&gt; connections) {
-<span class="nc" id="L97">        this.connections = connections;</span>
-<span class="nc" id="L98">    }</span>
-
-    public List&lt;Connection&gt; getFriends() {
-<span class="nc" id="L101">        return friends;</span>
-    }
-
-    public void setFriends(List&lt;Connection&gt; friends) {
-<span class="nc" id="L105">        this.friends = friends;</span>
-<span class="nc" id="L106">    }</span>
-
-<span class="fc" id="L108">    public User() {</span>
+<span class="fc" id="L108">        this.password = password;</span>
 <span class="fc" id="L109">    }</span>
 
-    public BigDecimal getBalance() {
-<span class="fc" id="L112">        return balance;</span>
+    /** @return La liste des transactions envoyées. */
+    public List&lt;Transaction&gt; getSentTransactions() {
+<span class="nc" id="L113">        return sentTransactions;</span>
     }
 
+    /** @param sentTransactions Définit la liste des transactions envoyées. */
+    public void setSentTransactions(List&lt;Transaction&gt; sentTransactions) {
+<span class="nc" id="L118">        this.sentTransactions = sentTransactions;</span>
+<span class="nc" id="L119">    }</span>
+
+    /** @return La liste des transactions reçues. */
+    public List&lt;Transaction&gt; getReceivedTransactions() {
+<span class="nc" id="L123">        return receivedTransactions;</span>
+    }
+
+    /** @param receivedTransactions Définit la liste des transactions reçues. */
+    public void setReceivedTransactions(List&lt;Transaction&gt; receivedTransactions) {
+<span class="nc" id="L128">        this.receivedTransactions = receivedTransactions;</span>
+<span class="nc" id="L129">    }</span>
+
+    /** @return Les connexions (amis ajoutés). */
+    public List&lt;Connection&gt; getConnections() {
+<span class="nc" id="L133">        return connections;</span>
+    }
+
+    /** @param connections Définit les connexions (amis ajoutés). */
+    public void setConnections(List&lt;Connection&gt; connections) {
+<span class="nc" id="L138">        this.connections = connections;</span>
+<span class="nc" id="L139">    }</span>
+
+    /** @return Les utilisateurs qui ont cet utilisateur en ami. */
+    public List&lt;Connection&gt; getFriends() {
+<span class="nc" id="L143">        return friends;</span>
+    }
+
+    /** @param friends Définit la liste des utilisateurs qui ont cet utilisateur en ami. */
+    public void setFriends(List&lt;Connection&gt; friends) {
+<span class="nc" id="L148">        this.friends = friends;</span>
+<span class="nc" id="L149">    }</span>
+
+<span class="fc" id="L151">    public User() {</span>
+<span class="fc" id="L152">    }</span>
+
+    /** @return Le solde du compte utilisateur. */
+    public BigDecimal getBalance() {
+<span class="fc" id="L156">        return balance;</span>
+    }
+
+    /** @param balance Définit le solde du compte utilisateur. */
     public void setBalance(BigDecimal balance) {
-<span class="fc" id="L116">        this.balance = balance;</span>
-<span class="fc" id="L117">    }</span>
+<span class="fc" id="L161">        this.balance = balance;</span>
+<span class="fc" id="L162">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

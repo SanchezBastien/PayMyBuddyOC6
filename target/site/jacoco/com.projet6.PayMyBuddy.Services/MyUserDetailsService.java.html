@@ -7,24 +7,37 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-//Spring Security appelle cette méthode lorsqu’un utilisateur essaie de se connecter.
-//Elle est responsable de retrouver l’utilisateur depuis la base de données, de construire un objet UserDetails,
-//et de le retourner à Spring Security pour effectuer l’authentification.
-@Service
-<span class="fc" id="L14">public class MyUserDetailsService implements UserDetailsService {</span>
+/**
+ * Service de gestion des détails utilisateurs pour l'authentification Spring Security.
+ * Cette classe permet à Spring Security de charger les informations d'un utilisateur
+ * (email, mot de passe, rôles) à partir de la base de données via le UserRepository.
+ * Elle est utilisée lors du processus de connexion pour authentifier les utilisateurs.
+ */
 
+@Service
+<span class="fc" id="L18">public class MyUserDetailsService implements UserDetailsService {</span>
+
+    /**
+     * Repository pour accéder aux utilisateurs stockés en base de données.
+     */
     @Autowired
     private UserRepository userRepository;
 
+/**
+ * Charge les détails d'un utilisateur à partir de son adresse email.
+ * Cette méthode est appelée automatiquement par Spring Security lors de la tentative
+ * de connexion d'un utilisateur. Elle recherche l'utilisateur dans la base de données,
+ * construit un objet UserDetails si l'utilisateur est trouvé, ou lance une exception sinon.
+ */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-<span class="fc" id="L21">        return userRepository.findByEmail(email)</span>
-<span class="fc" id="L22">                .map(user -&gt; new org.springframework.security.core.userdetails.User(</span>
-<span class="fc" id="L23">                        user.getEmail(),</span>
-<span class="fc" id="L24">                        user.getPassword(),  // doit être encodé</span>
-<span class="fc" id="L25">                        Collections.emptyList()</span>
+<span class="fc" id="L34">        return userRepository.findByEmail(email)</span>
+<span class="fc" id="L35">                .map(user -&gt; new org.springframework.security.core.userdetails.User(</span>
+<span class="fc" id="L36">                        user.getEmail(),</span>
+<span class="fc" id="L37">                        user.getPassword(),  // doit être encodé</span>
+<span class="fc" id="L38">                        Collections.emptyList()</span>
                 ))
-<span class="fc" id="L27">                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Utilisateur non trouvé : &quot; + email));</span>
+<span class="fc" id="L40">                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Utilisateur non trouvé : &quot; + email));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

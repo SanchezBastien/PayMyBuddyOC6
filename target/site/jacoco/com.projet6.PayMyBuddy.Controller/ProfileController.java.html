@@ -9,22 +9,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.security.Principal;
 
-//Gère l'affichage ou la mise à jour du profil utilisateur
-
+/**
+ * Contrôleur gérant l’affichage du profil de l’utilisateur connecté.
+ * Permet d’afficher les informations du profil de l’utilisateur courant,
+ * récupérées à partir de son email d’authentification.
+ */
 @Controller
-<span class="fc" id="L15">public class ProfileController {</span>
+<span class="fc" id="L18">public class ProfileController {</span>
 
     @Autowired
     private UserService userService;
 
+    /**
+     * Affiche la page de profil de l’utilisateur actuellement connecté.
+     * Récupère l’utilisateur à partir de l’identifiant d’authentification (email)
+     * et ajoute ses informations au modèle pour l’affichage
+     * @param model     Le modèle Spring MVC pour transmettre les informations utilisateur à la vue.
+     * @param principal Les informations d’authentification (email) de l’utilisateur connecté.
+     * @return Le nom de la vue &quot;profile&quot; (profil utilisateur).
+     * @throws IllegalArgumentException si l’utilisateur connecté n’est pas trouvé en base.
+     */
     @GetMapping(&quot;/profile&quot;)
     public String showProfile(Model model, Principal principal) {
         // Récupération de l'utilisateur connecté via son email (nom d'utilisateur = email)
-<span class="fc" id="L23">        User currentUser = userService.getUserByEmail(principal.getName())</span>
-<span class="fc" id="L24">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Utilisateur introuvable&quot;));</span>
+<span class="fc" id="L35">        User currentUser = userService.getUserByEmail(principal.getName())</span>
+<span class="fc" id="L36">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Utilisateur introuvable&quot;));</span>
 
-<span class="fc" id="L26">        model.addAttribute(&quot;user&quot;, currentUser);</span>
-<span class="fc" id="L27">        return &quot;profile&quot;;  // Correspond à profile.html</span>
+<span class="fc" id="L38">        model.addAttribute(&quot;user&quot;, currentUser);</span>
+<span class="fc" id="L39">        return &quot;profile&quot;;  // Correspond à profile.html</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

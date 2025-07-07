@@ -9,34 +9,55 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
+/**
+ * Configuration de la sécurité pour l'application PayMyBuddy.
+ * Cette classe configure les règles d'authentification et d'autorisation pour l'accès aux différentes
+ * ressources de l'application. Elle définit les pages accessibles sans authentification, la gestion
+ * du login, du logout et le chiffrement des mots de passe utilisateurs.
+ */
+
 @Configuration
 @EnableMethodSecurity
 @ConditionalOnWebApplication
-<span class="fc" id="L15">public class SecurityConfig {</span>
+<span class="fc" id="L23">public class SecurityConfig {</span>
 
+/**
+ * Configure la chaîne de filtres de sécurité pour l'application.
+ * - Autorise l'accès libre aux pages de connexion, d'inscription et aux ressources statiques (CSS, JS).
+ * - Rend toutes les autres URLs accessibles uniquement aux utilisateurs authentifiés.
+ * - Définit la page de login personnalisée et la redirection après connexion réussie.
+ * - Configure la déconnexion et la redirection après déconnexion.
+ */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-<span class="fc" id="L19">        http</span>
-<span class="fc" id="L20">                .authorizeHttpRequests(auth -&gt; auth</span>
-<span class="fc" id="L21">                        .requestMatchers(&quot;/login&quot;, &quot;/signup&quot;, &quot;/css/**&quot;, &quot;/js/**&quot;).permitAll()</span>
-<span class="fc" id="L22">                        .anyRequest().authenticated()</span>
+<span class="fc" id="L34">        http</span>
+<span class="fc" id="L35">                .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="fc" id="L36">                        .requestMatchers(&quot;/login&quot;, &quot;/signup&quot;, &quot;/css/**&quot;, &quot;/js/**&quot;).permitAll()</span>
+<span class="fc" id="L37">                        .anyRequest().authenticated()</span>
                 )
-<span class="fc" id="L24">                .formLogin(form -&gt; form</span>
-<span class="fc" id="L25">                        .loginPage(&quot;/login&quot;)</span>
-<span class="fc" id="L26">                        .defaultSuccessUrl(&quot;/profile&quot;, true)</span>
-<span class="fc" id="L27">                        .permitAll()</span>
+<span class="fc" id="L39">                .formLogin(form -&gt; form</span>
+<span class="fc" id="L40">                        .loginPage(&quot;/login&quot;)</span>
+<span class="fc" id="L41">                        .defaultSuccessUrl(&quot;/profile&quot;, true)</span>
+<span class="fc" id="L42">                        .permitAll()</span>
                 )
-<span class="fc" id="L29">                .logout(logout -&gt; logout</span>
-<span class="fc" id="L30">                        .logoutSuccessUrl(&quot;/login?logout&quot;)</span>
-<span class="fc" id="L31">                        .permitAll()</span>
+<span class="fc" id="L44">                .logout(logout -&gt; logout</span>
+<span class="fc" id="L45">                        .logoutSuccessUrl(&quot;/login?logout&quot;)</span>
+<span class="fc" id="L46">                        .permitAll()</span>
                 );
 
-<span class="fc" id="L34">        return http.build();</span>
+<span class="fc" id="L49">        return http.build();</span>
     }
 
+    /**
+     * Fournit un encodeur de mot de passe utilisant l'algorithme BCrypt.
+     * Cet encodeur est utilisé pour hasher les mots de passe utilisateurs avant stockage
+     * en base de données et pour la vérification lors de l'authentification
+     * @return Un PasswordEncoder basé sur BCrypt.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-<span class="fc" id="L39">        return new BCryptPasswordEncoder();</span>
+<span class="fc" id="L60">        return new BCryptPasswordEncoder();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -11,80 +11,111 @@ import org.springframework.ui.Model;
 import java.util.List;
 import java.util.Optional;
 
-//Vérifie et crée les liens de connexion entre utilisateurs (amis)
-
+/**
+ * Service métier pour la gestion des connexions (relations d’amitié) entre utilisateurs.
+ * Permet d’obtenir, de créer ou de supprimer des connexions, ainsi que de gérer
+ * la logique d’ajout d’ami avec contrôle métier (non duplication, non auto-ajout, etc.).
+ */
 @Service
-<span class="fc" id="L17">public class ConnectionService {</span>
+<span class="fc" id="L20">public class ConnectionService {</span>
     @Autowired
     private ConnectionRepository connectionRepository;
 
+    /**
+     * Récupère toutes les connexions présentes dans le système.
+     * @return Un iterable de toutes les connexions {@link Connection}.
+     */
     public Iterable&lt;Connection&gt; getConnections() {
-<span class="fc" id="L22">        return connectionRepository.findAll();</span>
+<span class="fc" id="L29">        return connectionRepository.findAll();</span>
     }
 
+    /**
+     * Récupère toutes les connexions d’un utilisateur donné.
+     * @param user L’utilisateur dont on veut la liste d’amis.
+     * @return La liste des connexions de cet utilisateur.
+     */
     public List&lt;Connection&gt; getConnectionsByUser(User user) {
-<span class="fc" id="L26">        return connectionRepository.findByUser(user);</span>
+<span class="fc" id="L38">        return connectionRepository.findByUser(user);</span>
     }
 
+    /**
+     * Enregistre une nouvelle connexion en base de données.
+     * @param connection La connexion à enregistrer.
+     * @return La connexion persistée.
+     */
     @Transactional
     public Connection saveConnection(Connection connection) {
-<span class="fc" id="L31">        return connectionRepository.save(connection);</span>
+<span class="fc" id="L48">        return connectionRepository.save(connection);</span>
     }
 
+    /**
+     * Supprime une connexion existante en base de données.
+     * @param connection La connexion à supprimer.
+     */
     @Transactional
     public void deleteConnection(Connection connection) {
-<span class="fc" id="L36">        connectionRepository.delete(connection);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L57">        connectionRepository.delete(connection);</span>
+<span class="fc" id="L58">    }</span>
 
+    /**
+     * Gère la logique d’ajout d’un nouvel ami à la liste de connexions d’un utilisateur.
+     * Vérifie l’existence de l’ami, empêche l’auto-ajout, interdit les doublons,
+     * et ajoute un message au modèle selon le résultat.
+     * @param friendEmail  Email de l’ami à ajouter.
+     * @param currentUser  L’utilisateur actuellement connecté.
+     * @param model        Le modèle Spring MVC pour transmettre les messages à la vue.
+     * @param userService  Service permettant de rechercher un utilisateur par email.
+     * @return Le nom de la vue à afficher après traitement.
+     */
     public String handleAddFriend(String friendEmail, User currentUser, Model model, UserService userService) {
-<span class="fc" id="L40">        Optional&lt;User&gt; friendOpt = userService.getUserByEmail(friendEmail);</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (friendOpt.isEmpty()) {</span>
-<span class="fc" id="L42">            model.addAttribute(&quot;message&quot;, &quot;Utilisateur introuvable.&quot;);</span>
-<span class="fc" id="L43">            model.addAttribute(&quot;error&quot;, true);</span>
-<span class="fc" id="L44">            return &quot;addfriend&quot;;</span>
+<span class="fc" id="L71">        Optional&lt;User&gt; friendOpt = userService.getUserByEmail(friendEmail);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (friendOpt.isEmpty()) {</span>
+<span class="fc" id="L73">            model.addAttribute(&quot;message&quot;, &quot;Utilisateur introuvable.&quot;);</span>
+<span class="fc" id="L74">            model.addAttribute(&quot;error&quot;, true);</span>
+<span class="fc" id="L75">            return &quot;addfriend&quot;;</span>
         }
 
-<span class="fc" id="L47">        User friend = friendOpt.get();</span>
+<span class="fc" id="L78">        User friend = friendOpt.get();</span>
 
-<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (currentUser.getId() == friend.getId()) {</span>
-<span class="fc" id="L50">            model.addAttribute(&quot;message&quot;, &quot;Impossible de s’ajouter soi-même.&quot;);</span>
-<span class="fc" id="L51">            model.addAttribute(&quot;error&quot;, true);</span>
-<span class="fc" id="L52">            return &quot;addfriend&quot;;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (currentUser.getId() == friend.getId()) {</span>
+<span class="fc" id="L81">            model.addAttribute(&quot;message&quot;, &quot;Impossible de s’ajouter soi-même.&quot;);</span>
+<span class="fc" id="L82">            model.addAttribute(&quot;error&quot;, true);</span>
+<span class="fc" id="L83">            return &quot;addfriend&quot;;</span>
         }
 
-<span class="fc" id="L55">        boolean alreadyConnected = getConnectionsByUser(currentUser)</span>
-<span class="fc" id="L56">                .stream()</span>
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">                .anyMatch(conn -&gt; conn.getFriend().getId() == friend.getId());</span>
+<span class="fc" id="L86">        boolean alreadyConnected = getConnectionsByUser(currentUser)</span>
+<span class="fc" id="L87">                .stream()</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">                .anyMatch(conn -&gt; conn.getFriend().getId() == friend.getId());</span>
 
-<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (alreadyConnected) {</span>
-<span class="fc" id="L60">            model.addAttribute(&quot;message&quot;, &quot;Vous êtes déjà connecté à cet utilisateur.&quot;);</span>
-<span class="fc" id="L61">            model.addAttribute(&quot;error&quot;, true);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (alreadyConnected) {</span>
+<span class="fc" id="L91">            model.addAttribute(&quot;message&quot;, &quot;Vous êtes déjà connecté à cet utilisateur.&quot;);</span>
+<span class="fc" id="L92">            model.addAttribute(&quot;error&quot;, true);</span>
         } else {
-<span class="fc" id="L63">            Connection connection = new Connection();</span>
-<span class="fc" id="L64">            connection.setUser(currentUser);</span>
-<span class="fc" id="L65">            connection.setFriend(friend);</span>
-<span class="fc" id="L66">            saveConnection(connection);</span>
-<span class="fc" id="L67">            model.addAttribute(&quot;message&quot;, &quot;Ami ajouté avec succès !&quot;);</span>
-<span class="fc" id="L68">            model.addAttribute(&quot;success&quot;, true);</span>
+<span class="fc" id="L94">            Connection connection = new Connection();</span>
+<span class="fc" id="L95">            connection.setUser(currentUser);</span>
+<span class="fc" id="L96">            connection.setFriend(friend);</span>
+<span class="fc" id="L97">            saveConnection(connection);</span>
+<span class="fc" id="L98">            model.addAttribute(&quot;message&quot;, &quot;Ami ajouté avec succès !&quot;);</span>
+<span class="fc" id="L99">            model.addAttribute(&quot;success&quot;, true);</span>
         }
 
-<span class="fc" id="L71">        return &quot;addfriend&quot;;</span>
+<span class="fc" id="L102">        return &quot;addfriend&quot;;</span>
     }
 
     @Transactional
     public Optional&lt;Connection&gt; createConnectionIfValid(Connection connection) {
-<span class="nc bnc" id="L76" title="All 4 branches missed.">        if (connection.getUser() == null || connection.getFriend() == null) {</span>
-<span class="nc" id="L77">            return Optional.empty();</span>
+<span class="nc bnc" id="L107" title="All 4 branches missed.">        if (connection.getUser() == null || connection.getFriend() == null) {</span>
+<span class="nc" id="L108">            return Optional.empty();</span>
         }
 
-<span class="nc" id="L80">        return Optional.of(connectionRepository.save(connection));</span>
+<span class="nc" id="L111">        return Optional.of(connectionRepository.save(connection));</span>
     }
 
     public Connection addConnection(User user1, User user2) {
-<span class="nc" id="L84">        Connection connection = new Connection();</span>
-<span class="nc" id="L85">        connection.setUser(user1);</span>
-<span class="nc" id="L86">        connection.setFriend(user2);</span>
-<span class="nc" id="L87">        return connectionRepository.save(connection);</span>
+<span class="nc" id="L115">        Connection connection = new Connection();</span>
+<span class="nc" id="L116">        connection.setUser(user1);</span>
+<span class="nc" id="L117">        connection.setFriend(user2);</span>
+<span class="nc" id="L118">        return connectionRepository.save(connection);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

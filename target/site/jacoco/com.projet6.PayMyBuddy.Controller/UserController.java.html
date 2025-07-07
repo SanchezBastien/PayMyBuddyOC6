@@ -8,61 +8,94 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-//Permet d’obtenir ou de gérer les informations d’un utilisateur
-
+/**
+ * Contrôleur REST pour la gestion des utilisateurs.
+ * Permet d’obtenir la liste des utilisateurs, de rechercher par identifiant ou email,
+ * de créer, mettre à jour ou supprimer un utilisateur.
+ */
 @RestController
 @RequestMapping(&quot;/users&quot;)
-<span class="fc" id="L15">public class UserController {</span>
+<span class="fc" id="L18">public class UserController {</span>
 
     @Autowired
     private UserService userService;
 
+    /**
+     * Récupère tous les utilisateurs du système
+     * @return Un iterable de tous les utilisateurs {@link User}.
+     */
     @GetMapping
     public Iterable&lt;User&gt; getAllUsers() {
-<span class="fc" id="L22">        return userService.getUsers();</span>
+<span class="fc" id="L29">        return userService.getUsers();</span>
     }
 
+    /**
+     * Recherche un utilisateur par son identifiant.
+     * @param id L’identifiant de l’utilisateur.
+     * @return L’utilisateur trouvé, ou 404 si inexistant.
+     */
     @GetMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;User&gt; getUserById(@PathVariable Integer id) {
-<span class="fc" id="L27">        return userService.getUserById(id)</span>
-<span class="fc" id="L28">                .map(ResponseEntity::ok)</span>
-<span class="fc" id="L29">                .orElse(ResponseEntity.notFound().build());</span>
+<span class="fc" id="L39">        return userService.getUserById(id)</span>
+<span class="fc" id="L40">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L41">                .orElse(ResponseEntity.notFound().build());</span>
     }
 
+    /**
+     * Recherche un utilisateur par son email.
+     * @param email L’email de l’utilisateur.
+     * @return L’utilisateur trouvé, ou 404 si inexistant.
+     */
     @GetMapping(&quot;/by-email&quot;)
     public ResponseEntity&lt;User&gt; getUserByEmail(@RequestParam String email) {
-<span class="fc" id="L34">        Optional&lt;User&gt; user = userService.getUserByEmail(email);</span>
-<span class="fc" id="L35">        return user.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</span>
+<span class="fc" id="L51">        Optional&lt;User&gt; user = userService.getUserByEmail(email);</span>
+<span class="fc" id="L52">        return user.map(ResponseEntity::ok).orElseGet(() -&gt; ResponseEntity.notFound().build());</span>
     }
 
+    /**
+     * Crée un nouvel utilisateur.
+     * @param user L’objet {@link User} à créer (reçu en JSON).
+     * @return L’utilisateur nouvellement créé.
+     */
     @PostMapping
     public ResponseEntity&lt;User&gt; createUser(@RequestBody User user) {
-<span class="fc" id="L40">        User savedUser = userService.saveUser(user);</span>
-<span class="fc" id="L41">        return ResponseEntity.ok(savedUser);</span>
+<span class="fc" id="L62">        User savedUser = userService.saveUser(user);</span>
+<span class="fc" id="L63">        return ResponseEntity.ok(savedUser);</span>
     }
 
+    /**
+     * Met à jour un utilisateur existant par son identifiant.
+     * @param id L’identifiant de l’utilisateur à modifier.
+     * @param userDetails Les nouvelles informations utilisateur.
+     * @return L’utilisateur modifié, ou 404 si inexistant.
+     */
     @PutMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;User&gt; updateUser(@PathVariable Integer id, @RequestBody User userDetails) {
-<span class="fc" id="L46">        Optional&lt;User&gt; optionalUser = userService.getUserById(id);</span>
-<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (optionalUser.isPresent()) {</span>
-<span class="fc" id="L48">            User user = optionalUser.get();</span>
-<span class="fc" id="L49">            user.setUsername(userDetails.getUsername());</span>
-<span class="fc" id="L50">            user.setEmail(userDetails.getEmail());</span>
-<span class="fc" id="L51">            user.setPassword(userDetails.getPassword());</span>
-<span class="fc" id="L52">            return ResponseEntity.ok(userService.saveUser(user));</span>
+<span class="fc" id="L74">        Optional&lt;User&gt; optionalUser = userService.getUserById(id);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (optionalUser.isPresent()) {</span>
+<span class="fc" id="L76">            User user = optionalUser.get();</span>
+<span class="fc" id="L77">            user.setUsername(userDetails.getUsername());</span>
+<span class="fc" id="L78">            user.setEmail(userDetails.getEmail());</span>
+<span class="fc" id="L79">            user.setPassword(userDetails.getPassword());</span>
+<span class="fc" id="L80">            return ResponseEntity.ok(userService.saveUser(user));</span>
         } else {
-<span class="fc" id="L54">            return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L82">            return ResponseEntity.notFound().build();</span>
         }
     }
 
+    /**
+     * Supprime un utilisateur par son identifiant.
+     * @param id L’identifiant de l’utilisateur à supprimer.
+     * @return Réponse 200 OK si suppression, ou 404 si inexistant.
+     */
     @DeleteMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Void&gt; deleteUser(@PathVariable Integer id) {
-<span class="fc" id="L60">        Optional&lt;User&gt; user = userService.getUserById(id);</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (user.isPresent()) {</span>
-<span class="fc" id="L62">            userService.deleteUserById(id);</span>
-<span class="fc" id="L63">            return ResponseEntity.ok().build();</span>
+<span class="fc" id="L93">        Optional&lt;User&gt; user = userService.getUserById(id);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (user.isPresent()) {</span>
+<span class="fc" id="L95">            userService.deleteUserById(id);</span>
+<span class="fc" id="L96">            return ResponseEntity.ok().build();</span>
         } else {
-<span class="fc" id="L65">            return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L98">            return ResponseEntity.notFound().build();</span>
         }
     }
 }

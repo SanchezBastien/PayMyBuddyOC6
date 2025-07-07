@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+/**
+ * Contrôleur gérant l’authentification des utilisateurs.
+ * Permet d’afficher le formulaire de connexion et de traiter la soumission pour authentifier
+ * un utilisateur à partir de son email et de son mot de passe.
+ */
 @Controller
-<span class="fc" id="L16">public class LoginController {</span>
+<span class="fc" id="L21">public class LoginController {</span>
 
     @Autowired
     private UserService userService;
@@ -21,24 +26,35 @@ import java.util.Optional;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Affiche le formulaire de login
+    /**
+     * Affiche le formulaire de connexion.
+     * @return Le nom de la vue pour la page de connexion (&quot;login&quot;).
+     */
     @GetMapping(&quot;/login&quot;)
     public String showLoginForm() {
-<span class="fc" id="L27">        return &quot;login&quot;;</span>
+<span class="fc" id="L35">        return &quot;login&quot;;</span>
     }
 
-    // Traite le formulaire de connexion
+    /**
+     * Traite la soumission du formulaire de connexion.
+     * Vérifie l’existence de l’utilisateur et la validité du mot de passe.
+     * En cas de succès, redirige vers la page de profil. Sinon, réaffiche le formulaire avec un message d’erreur.
+     * @param username L’email de l’utilisateur.
+     * @param password Le mot de passe saisi.
+     * @param model    Le modèle Spring MVC pour transmettre les erreurs éventuelles à la vue.
+     * @return Une redirection vers le profil si connexion réussie, sinon la vue de login avec erreur.
+     */
     @PostMapping(&quot;/login&quot;)
     public String handleLogin(@RequestParam String username,
                               @RequestParam String password,
                               Model model) {
-<span class="fc" id="L35">        Optional&lt;User&gt; optionalUser = userService.getUserByEmail(username);</span>
-<span class="fc" id="L36">        String encodePassword = passwordEncoder.encode(password);</span>
-<span class="fc bfc" id="L37" title="All 4 branches covered.">        if (optionalUser.isPresent() &amp;&amp; optionalUser.get().getPassword().equals(encodePassword)) {</span>
-<span class="fc" id="L38">            return &quot;redirect:/profile&quot;;</span>
+<span class="fc" id="L51">        Optional&lt;User&gt; optionalUser = userService.getUserByEmail(username);</span>
+<span class="fc" id="L52">        String encodePassword = passwordEncoder.encode(password);</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">        if (optionalUser.isPresent() &amp;&amp; optionalUser.get().getPassword().equals(encodePassword)) {</span>
+<span class="fc" id="L54">            return &quot;redirect:/profile&quot;;</span>
         } else {
-<span class="fc" id="L40">            model.addAttribute(&quot;error&quot;, &quot;Identifiants incorrects&quot;);</span>
-<span class="fc" id="L41">            return &quot;login&quot;;</span>
+<span class="fc" id="L56">            model.addAttribute(&quot;error&quot;, &quot;Identifiants incorrects&quot;);</span>
+<span class="fc" id="L57">            return &quot;login&quot;;</span>
         }
     }
 }

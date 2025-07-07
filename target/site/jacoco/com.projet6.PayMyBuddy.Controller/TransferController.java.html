@@ -15,10 +15,13 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
-//Gère les transferts d’argent entre utilisateurs connectés
-
+/**
+ * Contrôleur gérant les transferts d’argent entre utilisateurs connectés.
+ * Permet d’afficher la page de transfert, de lister les connexions de l’utilisateur courant,
+ * et de traiter l’envoi d’argent vers l’un de ses contacts.
+ */
 @Controller
-<span class="fc" id="L21">public class TransferController {</span>
+<span class="fc" id="L24">public class TransferController {</span>
 
     @Autowired
     private TransactionService transactionService;
@@ -29,26 +32,42 @@ import java.util.List;
     @Autowired
     private UserService userService;
 
+    /**
+     * Affiche la page de transfert pour l’utilisateur connecté.
+     * Affiche la liste de ses connexions (amis) ainsi que ses transactions envoyées.
+     * @param model Le modèle Spring MVC pour transmettre les connexions et transactions à la vue.
+     * @param principal Les informations d’authentification (email) de l’utilisateur connecté.
+     * @return Le nom de la vue &quot;transfer&quot;.
+     */
     @GetMapping(&quot;/transfer&quot;)
     public String showTransferPage(Model model, Principal principal) {
-<span class="fc" id="L34">        User currentUser = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
+<span class="fc" id="L44">        User currentUser = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
 
-<span class="fc" id="L36">        model.addAttribute(&quot;connections&quot;, connectionService.getConnectionsByUser(currentUser));</span>
-<span class="fc" id="L37">        model.addAttribute(&quot;transactions&quot;, transactionService.getTransactionBySender(currentUser));</span>
+<span class="fc" id="L46">        model.addAttribute(&quot;connections&quot;, connectionService.getConnectionsByUser(currentUser));</span>
+<span class="fc" id="L47">        model.addAttribute(&quot;transactions&quot;, transactionService.getTransactionBySender(currentUser));</span>
 
-<span class="fc" id="L39">        return &quot;transfer&quot;;</span>
+<span class="fc" id="L49">        return &quot;transfer&quot;;</span>
     }
 
+    /**
+     * Traite la soumission d’un transfert d’argent vers un autre utilisateur connecté.
+     * Déduit le montant du solde de l’expéditeur, crédite le destinataire, et enregistre la transaction.
+     * @param receiverId  L’identifiant de l’utilisateur destinataire.
+     * @param description Le motif ou commentaire du transfert.
+     * @param amount Le montant à transférer.
+     * @param principal Les informations d’authentification de l’utilisateur expéditeur.
+     * @return Une redirection vers la page de transfert après opération.
+     */
     @PostMapping(&quot;/transfer&quot;)
     public String processTransfer(@RequestParam Integer receiverId,
                                   @RequestParam String description,
                                   @RequestParam BigDecimal amount,
                                   Principal principal) {
-<span class="fc" id="L47">        User sender = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
-<span class="fc" id="L48">        User receiver = userService.getUserById(receiverId).orElseThrow();</span>
+<span class="fc" id="L66">        User sender = userService.getUserByEmail(principal.getName()).orElseThrow();</span>
+<span class="fc" id="L67">        User receiver = userService.getUserById(receiverId).orElseThrow();</span>
 
-<span class="fc" id="L50">        transactionService.transfer(sender, receiver, amount, description);</span>
-<span class="fc" id="L51">        return &quot;redirect:/transfer&quot;;</span>
+<span class="fc" id="L69">        transactionService.transfer(sender, receiver, amount, description);</span>
+<span class="fc" id="L70">        return &quot;redirect:/transfer&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

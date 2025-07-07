@@ -22,6 +22,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le service {@link TransactionService}.
+ * Vérifie la logique métier des transactions : récupération, création, suppression,
+ * et transfert d’argent entre utilisateurs (cas de succès et cas d’échec pour solde insuffisant).
+ * Toutes les dépendances sont mockées.
+ */
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
 
@@ -56,6 +62,9 @@ class TransactionServiceTest {
         transaction.setDescription("Payment");
     }
 
+    /**
+     * Vérifie que {@code getTransactions} retourne bien toutes les transactions enregistrées.
+     */
     @Test
     void getTransactions_returnsAllTransactions() {
         List<Transaction> expected = Arrays.asList(transaction);
@@ -68,6 +77,9 @@ class TransactionServiceTest {
         verify(transactionRepository).findAll();
     }
 
+    /**
+     * Vérifie que {@code getTransactionById} retourne bien la transaction si elle existe.
+     */
     @Test
     void getTransactionById_returnsTransaction() {
         when(transactionRepository.findById(1)).thenReturn(Optional.of(transaction));
@@ -79,6 +91,9 @@ class TransactionServiceTest {
         verify(transactionRepository).findById(1);
     }
 
+    /**
+     * Vérifie que {@code getTransactionBySender} retourne toutes les transactions pour un expéditeur donné.
+     */
     @Test
     void getTransactionBySender_returnsTransactions() {
         List<Transaction> expected = Collections.singletonList(transaction);
@@ -90,6 +105,9 @@ class TransactionServiceTest {
         verify(transactionRepository).findBySender(sender);
     }
 
+    /**
+     * Vérifie que {@code saveTransaction} sauvegarde et retourne la transaction passée.
+     */
     @Test
     void saveTransaction_savesAndReturnsTransaction() {
         when(transactionRepository.save(transaction)).thenReturn(transaction);
@@ -101,6 +119,9 @@ class TransactionServiceTest {
         verify(transactionRepository).save(transaction);
     }
 
+    /**
+     * Vérifie que {@code deleteTransactionById} appelle la suppression dans le repository.
+     */
     @Test
     void deleteTransactionById_deletesTransaction() {
         doNothing().when(transactionRepository).deleteById(1);
@@ -110,6 +131,9 @@ class TransactionServiceTest {
         verify(transactionRepository).deleteById(1);
     }
 
+    /**
+     * Vérifie qu’un transfert réussi met à jour les soldes et sauvegarde la transaction.
+     */
     @Test
     void transfer_successfulTransfer_updatesBalancesAndSavesTransaction() {
         BigDecimal amount = new BigDecimal("30.00");
@@ -143,6 +167,9 @@ class TransactionServiceTest {
         assertEquals(savedTransaction, result);
     }
 
+    /**
+     * Vérifie qu’un transfert échoue et lève une exception si le solde de l’expéditeur est insuffisant.
+     */
     @Test
     void transfer_throwsException_whenInsufficientBalance() {
         BigDecimal amount = new BigDecimal("200.00"); // plus que le solde du sender

@@ -18,6 +18,12 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link TransactionController}.
+ * Vérifie le comportement des endpoints de gestion des transactions (liste, création, modification).
+ * Teste les cas courants : existence ou non de l’utilisateur/transaction, et comportements attendus.
+ * Les dépendances sont mockées.
+ */
 class TransactionControllerTest {
 
     @Mock
@@ -47,6 +53,9 @@ class TransactionControllerTest {
         transaction.setAmount(new BigDecimal("100.11"));
     }
 
+    /**
+     * Vérifie que la récupération de toutes les transactions retourne la liste attendue.
+     */
     @Test
     void testGetAllTransactions() {
         List<Transaction> transactions = Arrays.asList(transaction);
@@ -60,6 +69,9 @@ class TransactionControllerTest {
         verify(transactionService, times(1)).getTransactions();
     }
 
+    /**
+     * Vérifie que la récupération des transactions par email expéditeur retourne bien la liste si l’utilisateur existe.
+     */
     @Test
     void testGetTransactionsBySenderEmail_Found() {
         List<Transaction> transactions = Arrays.asList(transaction);
@@ -75,6 +87,9 @@ class TransactionControllerTest {
         verify(transactionService, times(1)).getTransactionBySender(user);
     }
 
+    /**
+     * Vérifie que la récupération des transactions par email expéditeur retourne une liste vide si l’utilisateur n’existe pas.
+     */
     @Test
     void testGetTransactionsBySenderEmail_NotFound() {
         when(userService.getUserByEmail("unknown@test.com")).thenReturn(Optional.empty());
@@ -87,6 +102,9 @@ class TransactionControllerTest {
         verify(transactionService, never()).getTransactionBySender(any());
     }
 
+    /**
+     * Vérifie que la création d’une transaction fonctionne et retourne la transaction créée.
+     */
     @Test
     void testCreateTransaction() {
         when(transactionService.saveTransaction(transaction)).thenReturn(transaction);
@@ -99,6 +117,9 @@ class TransactionControllerTest {
         verify(transactionService, times(1)).saveTransaction(transaction);
     }
 
+    /**
+     * Vérifie que la mise à jour d’une transaction existante fonctionne et retourne la transaction modifiée.
+     */
     @Test
     void testUpdateTransaction_Found() {
         Transaction updatedDetails = new Transaction();
@@ -117,6 +138,9 @@ class TransactionControllerTest {
         verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
     }
 
+    /**
+     * Vérifie que la tentative de mise à jour d’une transaction inexistante retourne une réponse Not Found.
+     */
     @Test
     void testUpdateTransaction_NotFound() {
         when(transactionService.getTransactionById(99)).thenReturn(Optional.empty());

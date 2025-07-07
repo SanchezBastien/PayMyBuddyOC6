@@ -12,11 +12,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-//Gère les connexions entre utilisateurs (par exemple : afficher les amis connectés)
-
+/**
+ * Contrôleur REST pour la gestion des connexions (amis) entre utilisateurs.
+ * Permet d’afficher toutes les connexions, d’obtenir les connexions d’un utilisateur,
+ * d’ajouter ou de supprimer une connexion entre deux utilisateurs.
+ */
 @RestController
 @RequestMapping(&quot;/connections&quot;)
-<span class="fc" id="L19">public class ConnectionController {</span>
+<span class="fc" id="L22">public class ConnectionController {</span>
 
     @Autowired
     private ConnectionService connectionService;
@@ -24,29 +27,48 @@ import java.util.Optional;
     @Autowired
     private UserService userService;
 
+    /**
+     * Récupère l’ensemble des connexions existantes.
+     * @return Un iterable de toutes les connexions {@link Connection} du système.
+     */
     @GetMapping
     public Iterable&lt;Connection&gt; getAllConnections() {
-<span class="fc" id="L29">        return connectionService.getConnections();</span>
+<span class="fc" id="L36">        return connectionService.getConnections();</span>
     }
 
+    /**
+     * Récupère la liste des connexions pour un utilisateur donné par son email.
+     * @param email L’email de l’utilisateur.
+     * @return Une liste de connexions {@link Connection} pour cet utilisateur, ou une liste vide s’il n’existe pas.
+     */
     @GetMapping(&quot;/by-user&quot;)
     public List&lt;Connection&gt; getConnectionsByUserEmail(@RequestParam String email) {
-<span class="fc" id="L34">        return userService.getUserByEmail(email)</span>
-<span class="fc" id="L35">                .map(connectionService::getConnectionsByUser)</span>
-<span class="fc" id="L36">                .orElse(Collections.emptyList());</span>
+<span class="fc" id="L46">        return userService.getUserByEmail(email)</span>
+<span class="fc" id="L47">                .map(connectionService::getConnectionsByUser)</span>
+<span class="fc" id="L48">                .orElse(Collections.emptyList());</span>
     }
 
+    /**
+     * Crée une nouvelle connexion entre deux utilisateurs si elle est valide.
+     * @param connection L’objet {@link Connection} à créer (sous forme JSON).
+     * @return La connexion créée dans la réponse, ou une erreur (bad request) si invalide.
+     */
     @PostMapping
     public ResponseEntity&lt;Connection&gt; createConnection(@RequestBody Connection connection) {
-<span class="fc" id="L41">        return connectionService.createConnectionIfValid(connection)</span>
-<span class="fc" id="L42">                .map(ResponseEntity::ok)</span>
-<span class="fc" id="L43">                .orElse(ResponseEntity.badRequest().body(null));</span>
+<span class="fc" id="L58">        return connectionService.createConnectionIfValid(connection)</span>
+<span class="fc" id="L59">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L60">                .orElse(ResponseEntity.badRequest().body(null));</span>
     }
 
+    /**
+     * Supprime une connexion existante entre deux utilisateurs.
+     * @param connection L’objet {@link Connection} à supprimer (sous forme JSON).
+     * @return Une réponse HTTP 200 OK si la suppression a réussi.
+     */
     @DeleteMapping
     public ResponseEntity&lt;Void&gt; deleteConnection(@RequestBody Connection connection) {
-<span class="fc" id="L48">        connectionService.deleteConnection(connection);</span>
-<span class="fc" id="L49">        return ResponseEntity.ok().build();</span>
+<span class="fc" id="L70">        connectionService.deleteConnection(connection);</span>
+<span class="fc" id="L71">        return ResponseEntity.ok().build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

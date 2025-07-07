@@ -4,71 +4,97 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-//Représente un transfert d'argent entre deux utilisateurs
-
+/**
+ * Entité représentant une transaction (transfert d’argent) entre deux utilisateurs.
+ * Contient l’expéditeur, le destinataire, le montant transféré et une description éventuelle du transfert.
+ */
 @Entity
 @Table(name = &quot;transaction&quot;)
-<span class="fc" id="L11">public class Transaction {</span>
+<span class="fc" id="L13">public class Transaction {</span>
 
+    /**
+     * Identifiant unique de la transaction.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Utilisateur expéditeur de la transaction.
+     */
     @ManyToOne
     @JoinColumn(name = &quot;sender_id&quot;)
     @JsonIgnore
     private User sender;
 
+    /**
+     * Utilisateur destinataire de la transaction.
+     */
     @ManyToOne
     @JoinColumn(name = &quot;receiver_id&quot;)
     @JsonIgnore
     private User receiver;
 
+    /**
+     * Description ou motif de la transaction.
+     */
     @Column(columnDefinition = &quot;TEXT&quot;)
     private String description;
 
+    /**
+     * Montant transféré lors de la transaction.
+     */
     @Column(precision = 10, scale = 2)
     private BigDecimal amount;
 
-
+    /** @return L’identifiant de la transaction. */
     public int getId() {
-<span class="nc" id="L35">        return id;</span>
+<span class="nc" id="L52">        return id;</span>
     }
 
+    /** @param id Définit l’identifiant de la transaction. */
     public void setId(int id) {
-<span class="fc" id="L39">        this.id = id;</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L57">        this.id = id;</span>
+<span class="fc" id="L58">    }</span>
 
+    /** @return L’utilisateur expéditeur de la transaction. */
     public User getSender() {
-<span class="fc" id="L43">        return sender;</span>
+<span class="fc" id="L62">        return sender;</span>
     }
 
+    /** @param sender Définit l’expéditeur de la transaction. */
     public void setSender(User sender) {
-<span class="fc" id="L47">        this.sender = sender;</span>
-<span class="fc" id="L48">    }</span>
+<span class="fc" id="L67">        this.sender = sender;</span>
+<span class="fc" id="L68">    }</span>
 
+    /** @return L’utilisateur destinataire de la transaction. */
     public User getReceiver() {
-<span class="fc" id="L51">        return receiver;</span>
+<span class="fc" id="L72">        return receiver;</span>
     }
 
+    /** @param receiver Définit le destinataire de la transaction. */
     public void setReceiver(User receiver) {
-<span class="fc" id="L55">        this.receiver = receiver;</span>
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L77">        this.receiver = receiver;</span>
+<span class="fc" id="L78">    }</span>
 
+    /** @return La description de la transaction. */
     public String getDescription() {
-<span class="fc" id="L59">        return description;</span>
+<span class="fc" id="L82">        return description;</span>
     }
 
+    /** @param description Définit la description de la transaction. */
     public void setDescription(String description) {
-<span class="fc" id="L63">        this.description = description;</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L87">        this.description = description;</span>
+<span class="fc" id="L88">    }</span>
 
+    /** @return Le montant de la transaction. */
     public BigDecimal getAmount() {
-<span class="fc" id="L67">        return amount;</span>
+<span class="fc" id="L92">        return amount;</span>
     }
 
+    /** @param amount Définit le montant de la transaction. */
     public void setAmount(BigDecimal amount) {
-<span class="fc" id="L71">        this.amount = amount;</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L97">        this.amount = amount;</span>
+<span class="fc" id="L98">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

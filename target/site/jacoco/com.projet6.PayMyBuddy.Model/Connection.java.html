@@ -3,37 +3,62 @@
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-//Lien d’amitié/connexion entre deux utilisateurs
-
+/**
+ * Entité représentant une connexion (relation d’amitié) entre deux utilisateurs.
+ * Une connexion relie un utilisateur à l’un de ses amis dans le système PayMyBuddy.
+ * Utilise une clé composite (user, friend) pour garantir l’unicité de la relation.
+ */
 @Entity
 @Table(name = &quot;connection&quot;)
 @IdClass(UserConnectionId.class)
-<span class="fc" id="L11">public class Connection {</span>
+<span class="fc" id="L14">public class Connection {</span>
 
+    /**
+     * Utilisateur source de la connexion (celui qui ajoute un ami).
+     */
     @Id
     @ManyToOne
     @JoinColumn(name = &quot;user_id&quot;)
     private User user;
 
+    /**
+     * Utilisateur ami (cible de la connexion).
+     */
     @Id
     @ManyToOne
     @JoinColumn(name = &quot;friend_id&quot;)
     private User friend;
 
+    /**
+     * Retourne l’utilisateur source de la connexion.
+     * @return L’utilisateur ayant cette connexion.
+     */
     public User getUser() {
-<span class="nc" id="L24">        return user;</span>
+<span class="nc" id="L37">        return user;</span>
     }
 
+    /**
+     * Définit l’utilisateur source de la connexion.
+     * @param user L’utilisateur à définir.
+     */
     public void setUser(User user) {
-<span class="fc" id="L28">        this.user = user;</span>
-<span class="fc" id="L29">    }</span>
+<span class="fc" id="L45">        this.user = user;</span>
+<span class="fc" id="L46">    }</span>
 
+    /**
+     * Retourne l’ami connecté à l’utilisateur.
+     * @return L’utilisateur ami.
+     */
     public User getFriend() {
-<span class="fc" id="L32">        return friend;</span>
+<span class="fc" id="L53">        return friend;</span>
     }
 
+    /**
+     * Définit l’ami de cette connexion.
+     * @param friend L’ami à ajouter à la connexion.
+     */
     public void setFriend(User friend) {
-<span class="fc" id="L36">        this.friend = friend;</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L61">        this.friend = friend;</span>
+<span class="fc" id="L62">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

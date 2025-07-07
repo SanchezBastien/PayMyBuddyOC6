@@ -7,15 +7,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-//Spring Security appelle cette méthode lorsqu’un utilisateur essaie de se connecter.
-//Elle est responsable de retrouver l’utilisateur depuis la base de données, de construire un objet UserDetails,
-//et de le retourner à Spring Security pour effectuer l’authentification.
+/**
+ * Service de gestion des détails utilisateurs pour l'authentification Spring Security.
+ * Cette classe permet à Spring Security de charger les informations d'un utilisateur
+ * (email, mot de passe, rôles) à partir de la base de données via le UserRepository.
+ * Elle est utilisée lors du processus de connexion pour authentifier les utilisateurs.
+ */
+
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
+    /**
+     * Repository pour accéder aux utilisateurs stockés en base de données.
+     */
     @Autowired
     private UserRepository userRepository;
 
+/**
+ * Charge les détails d'un utilisateur à partir de son adresse email.
+ * Cette méthode est appelée automatiquement par Spring Security lors de la tentative
+ * de connexion d'un utilisateur. Elle recherche l'utilisateur dans la base de données,
+ * construit un objet UserDetails si l'utilisateur est trouvé, ou lance une exception sinon.
+ */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)

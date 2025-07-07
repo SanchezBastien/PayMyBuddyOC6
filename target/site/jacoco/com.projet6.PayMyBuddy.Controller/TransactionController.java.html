@@ -14,11 +14,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-//Fournit les opérations liées aux transactions (envoi, consultation)
-
+/**
+ * Contrôleur REST pour la gestion des transactions entre utilisateurs.
+ * Permet de consulter toutes les transactions, de filtrer par expéditeur,
+ * de créer une nouvelle transaction et de mettre à jour ou supprimer une transaction existante.
+ */
 @RestController
 @RequestMapping(&quot;/transactions&quot;)
-<span class="fc" id="L21">public class TransactionController {</span>
+<span class="fc" id="L24">public class TransactionController {</span>
 
     @Autowired
     private TransactionService transactionService;
@@ -26,47 +29,75 @@ import java.util.Optional;
     @Autowired
     private UserService userService;
 
+    /**
+     * Récupère toutes les transactions enregistrées dans le système.
+     * @return Un iterable de toutes les transactions {@link Transaction}.
+     */
     @GetMapping
     public Iterable&lt;Transaction&gt; getAllTransactions() {
-<span class="fc" id="L31">        return transactionService.getTransactions();</span>
+<span class="fc" id="L38">        return transactionService.getTransactions();</span>
     }
 
+    /**
+     * Récupère les transactions effectuées par un utilisateur donné.
+     * @param email L’email de l’utilisateur expéditeur.
+     * @return Une liste des transactions pour cet expéditeur, ou une liste vide s’il n’existe pas.
+     */
     @GetMapping(&quot;/by-sender&quot;)
     public List&lt;Transaction&gt; getTransactionsBySenderEmail(@RequestParam String email) {
-<span class="fc" id="L36">        return userService.getUserByEmail(email)</span>
-<span class="fc" id="L37">                .map(transactionService::getTransactionBySender)</span>
-<span class="fc" id="L38">                .orElse(Collections.emptyList());</span>
+<span class="fc" id="L48">        return userService.getUserByEmail(email)</span>
+<span class="fc" id="L49">                .map(transactionService::getTransactionBySender)</span>
+<span class="fc" id="L50">                .orElse(Collections.emptyList());</span>
     }
 
+    /**
+     * Crée et enregistre une nouvelle transaction.
+     * @param transaction L’objet {@link Transaction} à enregistrer (reçu en JSON).
+     * @return La transaction créée.
+     */
     @PostMapping
     public ResponseEntity&lt;Transaction&gt; createTransaction(@RequestBody Transaction transaction) {
-<span class="fc" id="L43">        Transaction saved = transactionService.saveTransaction(transaction);</span>
-<span class="fc" id="L44">        return ResponseEntity.ok(saved);</span>
+<span class="fc" id="L60">        Transaction saved = transactionService.saveTransaction(transaction);</span>
+<span class="fc" id="L61">        return ResponseEntity.ok(saved);</span>
     }
 
+    /**
+     * Met à jour une transaction existante par son identifiant.
+     * @param id L’ID de la transaction à mettre à jour.
+     * @param transactionDetails Les nouvelles données de la transaction.
+     * @return La transaction mise à jour, ou 404 si non trouvée.
+     */
     @PutMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Transaction&gt; updateTransaction(@PathVariable Integer id, @RequestBody Transaction transactionDetails) {
-<span class="fc" id="L49">        Optional&lt;Transaction&gt; optionalTransaction = transactionService.getTransactionById(id);</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (optionalTransaction.isPresent()) {</span>
-<span class="fc" id="L51">            Transaction transaction = optionalTransaction.get();</span>
-<span class="fc" id="L52">            transaction.setSender(transactionDetails.getSender());</span>
-<span class="fc" id="L53">            transaction.setReceiver(transactionDetails.getReceiver());</span>
-<span class="fc" id="L54">            transaction.setAmount(transactionDetails.getAmount());</span>
-<span class="fc" id="L55">            transaction.setDescription(transactionDetails.getDescription());</span>
-<span class="fc" id="L56">            return ResponseEntity.ok(transactionService.saveTransaction(transaction));</span>
+<span class="fc" id="L72">        Optional&lt;Transaction&gt; optionalTransaction = transactionService.getTransactionById(id);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (optionalTransaction.isPresent()) {</span>
+<span class="fc" id="L74">            Transaction transaction = optionalTransaction.get();</span>
+<span class="fc" id="L75">            transaction.setSender(transactionDetails.getSender());</span>
+<span class="fc" id="L76">            transaction.setReceiver(transactionDetails.getReceiver());</span>
+<span class="fc" id="L77">            transaction.setAmount(transactionDetails.getAmount());</span>
+<span class="fc" id="L78">            transaction.setDescription(transactionDetails.getDescription());</span>
+<span class="fc" id="L79">            return ResponseEntity.ok(transactionService.saveTransaction(transaction));</span>
         } else {
-<span class="fc" id="L58">            return ResponseEntity.notFound().build();</span>
+<span class="fc" id="L81">            return ResponseEntity.notFound().build();</span>
         }
     }
 
+    /**
+     * Supprime une transaction par son identifiant.
+     * Recherche la transaction correspondante à l’ID fourni. Si elle existe, la transaction
+     * est supprimée du système et une réponse HTTP 200 OK est retournée. Si la transaction
+     * n’existe pas, une réponse HTTP 404 Not Found est renvoyée.
+     * @param id L’identifiant de la transaction à supprimer.
+     * @return Une réponse HTTP 200 OK si suppression réussie, ou 404 Not Found si la transaction n’existe pas.
+     */
     @DeleteMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;Void&gt; deleteTransaction(@PathVariable Integer id) {
-<span class="nc" id="L64">        Optional&lt;Transaction&gt; transaction = transactionService.getTransactionById(id);</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (transaction.isPresent()) {</span>
-<span class="nc" id="L66">            transactionService.deleteTransactionById(id);</span>
-<span class="nc" id="L67">            return ResponseEntity.ok().build();</span>
+<span class="nc" id="L95">        Optional&lt;Transaction&gt; transaction = transactionService.getTransactionById(id);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (transaction.isPresent()) {</span>
+<span class="nc" id="L97">            transactionService.deleteTransactionById(id);</span>
+<span class="nc" id="L98">            return ResponseEntity.ok().build();</span>
         } else {
-<span class="nc" id="L69">            return ResponseEntity.notFound().build();</span>
+<span class="nc" id="L100">            return ResponseEntity.notFound().build();</span>
         }
     }
 }

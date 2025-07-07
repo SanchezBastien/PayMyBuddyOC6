@@ -17,6 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link ProfileController}.
+ * Vérifie l’affichage du profil utilisateur dans différents cas (succès, utilisateur non trouvé).
+ * Les dépendances sont mockées pour isoler le comportement du contrôleur.
+ */
 class ProfileControllerTest {
 
     @Mock
@@ -33,6 +38,10 @@ class ProfileControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que l’affichage du profil fonctionne et transmet les bonnes informations
+     * au modèle lorsque l’utilisateur connecté est trouvé.
+     */
     @Test
     void testShowProfileSuccess() {
         when(principal.getName()).thenReturn("user@email.com");
@@ -45,6 +54,10 @@ class ProfileControllerTest {
         verify(model).addAttribute(eq("user"), any(User.class));
     }
 
+    /**
+     * Vérifie que l’affichage du profil lance une exception ou gère le cas
+     * où l’utilisateur connecté n’existe pas.
+     */
     @Test
     void testShowProfileUserNotFound() {
         when(principal.getName()).thenReturn("user@email.com");

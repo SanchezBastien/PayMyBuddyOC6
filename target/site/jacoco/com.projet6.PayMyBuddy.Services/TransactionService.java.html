@@ -11,62 +11,100 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-//Traite les transferts d'argent, la création et la récupération des transactions
-
+/**
+ * Service métier pour la gestion des transactions (transferts d’argent) entre utilisateurs.
+ * Permet de consulter, créer, supprimer des transactions et de gérer la logique de transfert
+ * d’argent entre utilisateurs avec contrôle de solde.
+ */
 @Service
-<span class="fc" id="L17">public class TransactionService {</span>
+<span class="fc" id="L20">public class TransactionService {</span>
     @Autowired
     private TransactionRepository transactionRepository;
 
     @Autowired
     private UserService userService;
 
+    /**
+     * Récupère toutes les transactions enregistrées dans le système.
+     * @return Un iterable de toutes les transactions {@link Transaction}.
+     */
     public Iterable&lt;Transaction&gt; getTransactions() {
-<span class="fc" id="L25">        return transactionRepository.findAll();</span>
+<span class="fc" id="L32">        return transactionRepository.findAll();</span>
     }
 
+    /**
+     * Recherche une transaction par son identifiant.
+     * @param id L’identifiant de la transaction.
+     * @return La transaction correspondante, ou un Optional vide si non trouvée.
+     */
     public Optional&lt;Transaction&gt; getTransactionById(Integer id) {
-<span class="fc" id="L29">        return transactionRepository.findById(id);</span>
+<span class="fc" id="L41">        return transactionRepository.findById(id);</span>
     }
 
+    /**
+     * Récupère toutes les transactions envoyées par un utilisateur donné.
+     * @param sender L’utilisateur expéditeur.
+     * @return La liste des transactions envoyées par cet utilisateur.
+     */
     public List&lt;Transaction&gt; getTransactionBySender(User sender) {
-<span class="fc" id="L33">        return transactionRepository.findBySender(sender);</span>
+<span class="fc" id="L50">        return transactionRepository.findBySender(sender);</span>
     }
 
+    /**
+     * Enregistre une transaction en base de données.
+     * @param transaction La transaction à enregistrer.
+     * @return La transaction persistée.
+     */
     @Transactional
     public Transaction saveTransaction(Transaction transaction) {
-<span class="fc" id="L38">        return transactionRepository.save(transaction);</span>
+<span class="fc" id="L60">        return transactionRepository.save(transaction);</span>
     }
 
+    /**
+     * Supprime une transaction par son identifiant.
+     * @param id L’identifiant de la transaction à supprimer.
+     */
     @Transactional
     public void deleteTransactionById(Integer id) {
-<span class="fc" id="L43">        transactionRepository.deleteById(id);</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L69">        transactionRepository.deleteById(id);</span>
+<span class="fc" id="L70">    }</span>
 
+    /**
+     * Effectue un transfert d’argent entre deux utilisateurs.
+     * Vérifie que le solde de l’expéditeur est suffisant, débite son compte,
+     * crédite le destinataire, sauvegarde les nouveaux soldes et enregistre la transaction.
+     * Lève une exception en cas de solde insuffisant.
+     * @param sender      L’utilisateur expéditeur.
+     * @param receiver    L’utilisateur destinataire.
+     * @param amount      Le montant à transférer.
+     * @param description Le motif du transfert.
+     * @return La transaction créée et enregistrée.
+     * @throws IllegalArgumentException si le solde du sender est insuffisant.
+     */
     @Transactional
     public Transaction transfer(User sender, User receiver, BigDecimal amount, String description) {
-<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (sender.getBalance().compareTo(amount) &lt; 0) {</span>
-<span class="fc" id="L49">            throw new IllegalArgumentException(&quot;Solde insuffisant pour le transfert.&quot;);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (sender.getBalance().compareTo(amount) &lt; 0) {</span>
+<span class="fc" id="L87">            throw new IllegalArgumentException(&quot;Solde insuffisant pour le transfert.&quot;);</span>
         }
 
         // Débit du sender
-<span class="fc" id="L53">        sender.setBalance(sender.getBalance().subtract(amount));</span>
+<span class="fc" id="L91">        sender.setBalance(sender.getBalance().subtract(amount));</span>
 
         // Crédit du receiver
-<span class="fc" id="L56">        receiver.setBalance(receiver.getBalance().add(amount));</span>
+<span class="fc" id="L94">        receiver.setBalance(receiver.getBalance().add(amount));</span>
 
         // Sauvegarder les utilisateurs avec les nouveaux soldes
-<span class="fc" id="L59">        userService.saveUser(sender);</span>
-<span class="fc" id="L60">        userService.saveUser(receiver);</span>
+<span class="fc" id="L97">        userService.saveUser(sender);</span>
+<span class="fc" id="L98">        userService.saveUser(receiver);</span>
 
         // Créer et enregistrer la transaction
-<span class="fc" id="L63">        Transaction transaction = new Transaction();</span>
-<span class="fc" id="L64">        transaction.setSender(sender);</span>
-<span class="fc" id="L65">        transaction.setReceiver(receiver);</span>
-<span class="fc" id="L66">        transaction.setAmount(amount);</span>
-<span class="fc" id="L67">        transaction.setDescription(description);</span>
+<span class="fc" id="L101">        Transaction transaction = new Transaction();</span>
+<span class="fc" id="L102">        transaction.setSender(sender);</span>
+<span class="fc" id="L103">        transaction.setReceiver(receiver);</span>
+<span class="fc" id="L104">        transaction.setAmount(amount);</span>
+<span class="fc" id="L105">        transaction.setDescription(description);</span>
 
-<span class="fc" id="L69">        return transactionRepository.save(transaction);</span>
+<span class="fc" id="L107">        return transactionRepository.save(transaction);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -13,6 +13,14 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link SignupController}.
+ * Vérifie la logique d’inscription d’un nouvel utilisateur :
+ * - Enregistrement de l’utilisateur,
+ * - Encodage du mot de passe,
+ * - Initialisation correcte du solde.
+ * Les dépendances sont mockées pour isoler le contrôleur.
+ */
 public class SignupControllerTest {
 
     @InjectMocks
@@ -29,6 +37,10 @@ public class SignupControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que la méthode {@code processSignup} enregistre bien un nouvel utilisateur
+     * et redirige vers la page de login.
+     */
     @Test
     void processSignup_ShouldSaveUser_AndRedirectToLogin() {
         // GIVEN
@@ -53,6 +65,9 @@ public class SignupControllerTest {
         verify(passwordEncoder).encode(password);
     }
 
+    /**
+     * Vérifie que le mot de passe de l’utilisateur est correctement encodé lors de l’inscription.
+     */
     @Test
     void processSignup_ShouldEncodePassword() {
         String username = "otheruser";
@@ -66,6 +81,9 @@ public class SignupControllerTest {
         verify(passwordEncoder).encode(password);
     }
 
+    /**
+     * Vérifie que l’utilisateur enregistré a un solde initial égal à zéro.
+     */
     @Test
     void processSignup_ShouldCallSaveUserWithUserHavingBalanceZero() {
         String username = "zeroUser";

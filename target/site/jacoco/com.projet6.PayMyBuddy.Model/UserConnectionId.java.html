@@ -3,32 +3,53 @@
 import java.io.Serializable;
 import java.util.Objects;
 
-//Classe de clé composite utilisée pour gérer la relation Connection entre deux utilisateurs.
-/*table de liaison*/
+/**
+ * Classe (table de liaison) représentant la clé composite pour l’entité {@link Connection}.
+ * Utilisée pour identifier de façon unique une connexion entre deux utilisateurs
+ * dans la table de liaison. Implémente {@link Serializable} et redéfinit {@code equals} et {@code hashCode}
+ * pour garantir l’unicité et le bon fonctionnement des opérations JPA.
+ */
 
 public class UserConnectionId implements Serializable {
 
+    /** Identifiant de l’utilisateur source de la connexion. */
     private int user;
+    /** Identifiant de l’utilisateur ami. */
     private int friend;
 
-<span class="nc" id="L14">    public UserConnectionId() {}</span>
+    /** Constructeur par défaut (requis par JPA). */
+<span class="nc" id="L21">    public UserConnectionId() {}</span>
 
-<span class="nc" id="L16">    public UserConnectionId(int user, int friend) {</span>
-<span class="nc" id="L17">        this.user = user;</span>
-<span class="nc" id="L18">        this.friend = friend;</span>
-<span class="nc" id="L19">    }</span>
+    /**
+     * Constructeur avec tous les champs.
+     * @param user   Identifiant de l’utilisateur source.
+     * @param friend Identifiant de l’ami.
+     */
+<span class="nc" id="L28">    public UserConnectionId(int user, int friend) {</span>
+<span class="nc" id="L29">        this.user = user;</span>
+<span class="nc" id="L30">        this.friend = friend;</span>
+<span class="nc" id="L31">    }</span>
 
+    /**
+     * Compare deux objets UserConnectionId pour vérifier leur égalité.
+     * @param o L’objet à comparer.
+     * @return {@code true} si les deux objets sont égaux, {@code false} sinon.
+     */
     @Override
     public boolean equals(Object o) {
-<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (this == o) return true;</span>
-<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (!(o instanceof UserConnectionId)) return false;</span>
-<span class="nc" id="L25">        UserConnectionId that = (UserConnectionId) o;</span>
-<span class="nc bnc" id="L26" title="All 4 branches missed.">        return user == that.user &amp;&amp; friend == that.friend;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (!(o instanceof UserConnectionId)) return false;</span>
+<span class="nc" id="L42">        UserConnectionId that = (UserConnectionId) o;</span>
+<span class="nc bnc" id="L43" title="All 4 branches missed.">        return user == that.user &amp;&amp; friend == that.friend;</span>
     }
 
+    /**
+     * Calcule le hashcode à partir des deux identifiants.
+     * @return Le hashcode de la clé composite.
+     */
     @Override
     public int hashCode() {
-<span class="nc" id="L31">        return Objects.hash(user, friend);</span>
+<span class="nc" id="L52">        return Objects.hash(user, friend);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

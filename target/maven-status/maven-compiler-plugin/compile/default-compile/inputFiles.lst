@@ -1,3 +1,4 @@
+C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\exceptions\GlobalExceptionHandler.java
 C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Controller\TransactionController.java
 C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Services\MyUserDetailsService.java
 C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Repository\TransactionRepository.java
@@ -19,3 +20,5 @@ C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com
 C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Controller\AddFriendController.java
 C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Controller\LoginController.java
 C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Services\UserService.java
+C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\Config\WebConfig.java
+C:\Users\sanch\Documents\Formation OC\Projets\PayMyBuddy_Clean\src\main\java\com\projet6\PayMyBuddy\logging\RequestLoggingInterceptor.java

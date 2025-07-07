@@ -14,6 +14,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link UserController}.
+ * Vérifie tous les endpoints de gestion des utilisateurs (récupération, création, modification, suppression),
+ * pour les cas de succès et d’échec. Les dépendances sont mockées.
+ */
 class UserControllerTest {
 
     @InjectMocks
@@ -29,6 +34,9 @@ class UserControllerTest {
         closeable = MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que {@code getAllUsers()} retourne la liste attendue des utilisateurs.
+     */
     @Test
     void getAllUsers_shouldReturnListOfUsers() {
         User user1 = new User();
@@ -50,6 +58,9 @@ class UserControllerTest {
         assertEquals("Alice", ((User)users.iterator().next()).getUsername());
     }
 
+    /**
+     * Vérifie que {@code getUserById()} retourne un utilisateur si l’ID existe.
+     */
     @Test
     void getUserById_found() {
         User user = new User();
@@ -65,6 +76,9 @@ class UserControllerTest {
         assertEquals("Alice", response.getBody().getUsername());
     }
 
+    /**
+     * Vérifie que {@code getUserById()} retourne 404 si l’ID n’existe pas.
+     */
     @Test
     void getUserById_notFound() {
         when(userService.getUserById(99)).thenReturn(Optional.empty());
@@ -73,6 +87,9 @@ class UserControllerTest {
         assertNull(response.getBody());
     }
 
+    /**
+     * Vérifie que {@code getUserByEmail()} retourne un utilisateur si l’email existe.
+     */
     @Test
     void getUserByEmail_found() {
         User user = new User();
@@ -88,6 +105,9 @@ class UserControllerTest {
         assertEquals(1, response.getBody().getId());
     }
 
+    /**
+     * Vérifie que {@code getUserByEmail()} retourne 404 si l’email n’existe pas.
+     */
     @Test
     void getUserByEmail_notFound() {
         when(userService.getUserByEmail("no@mail.com")).thenReturn(Optional.empty());
@@ -97,6 +117,9 @@ class UserControllerTest {
         assertNull(response.getBody());
     }
 
+    /**
+     * Vérifie que {@code createUser()} retourne bien l’utilisateur créé.
+     */
     @Test
     void createUser_shouldReturnCreatedUser() {
         User user = new User();
@@ -117,6 +140,9 @@ class UserControllerTest {
         assertEquals(1, response.getBody().getId());
     }
 
+    /**
+     * Vérifie que {@code updateUser()} modifie un utilisateur existant.
+     */
     @Test
     void updateUser_found() {
         User existingUser = new User();
@@ -144,6 +170,9 @@ class UserControllerTest {
         assertEquals("Alice", response.getBody().getUsername());
     }
 
+    /**
+     * Vérifie que {@code updateUser()} retourne 404 si l’utilisateur à modifier n’existe pas.
+     */
     @Test
     void updateUser_notFound() {
         User details = new User();
@@ -158,6 +187,9 @@ class UserControllerTest {
         assertNull(response.getBody());
     }
 
+    /**
+     * Vérifie que {@code deleteUser()} supprime l’utilisateur si l’ID existe.
+     */
     @Test
     void deleteUser_found() {
         User user = new User();
@@ -173,6 +205,10 @@ class UserControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
+
+    /**
+     * Vérifie que {@code deleteUser()} retourne 404 si l’ID à supprimer n’existe pas.
+     */
     @Test
     void deleteUser_notFound() {
         when(userService.getUserById(1)).thenReturn(Optional.empty());

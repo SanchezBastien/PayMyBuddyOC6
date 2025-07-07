@@ -23,6 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link TransferController}.
+ * Vérifie le comportement de la page et du traitement des transferts d’argent :
+ * - Affichage de la page de transfert et ajout des attributs attendus au modèle.
+ * - Appel du service de transfert lors de la soumission du formulaire.
+ * - Gestion des cas d’utilisateur ou de destinataire non trouvés.
+ * Les services et le modèle sont mockés pour isoler le contrôleur.
+ */
 class TransferControllerTest {
 
     @Mock
@@ -42,6 +50,10 @@ class TransferControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que la méthode {@code showTransferPage} ajoute bien les attributs "connections"
+     * et "transactions" au modèle et retourne le nom de la vue "transfer".
+     */
     @Test
     @DisplayName("GET /transfer ajoute les attributs attendus au modèle et retourne 'transfer'")
     void showTransferPage_shouldAddAttributesAndReturnTransferView() {
@@ -64,6 +76,10 @@ class TransferControllerTest {
         verify(model).addAttribute(eq("transactions"), any());
     }
 
+    /**
+     * Vérifie que la méthode {@code processTransfer} appelle le service de transfert
+     * et retourne une redirection vers la page de transfert.
+     */
     @Test
     @DisplayName("POST /transfer appelle le service de transfert et retourne la redirection")
     void processTransfer_shouldCallServiceAndRedirect() {
@@ -87,6 +103,9 @@ class TransferControllerTest {
         verify(transactionService).transfer(sender, receiver, new BigDecimal("12.50"), "Remboursement");
     }
 
+    /**
+     * Vérifie que la méthode {@code processTransfer} lève une exception si l’utilisateur courant n’existe pas.
+     */
     @Test
     @DisplayName("POST /transfer lève une exception si l'utilisateur n'existe pas")
     void processTransfer_userNotFound_shouldThrow() {
@@ -100,6 +119,9 @@ class TransferControllerTest {
         });
     }
 
+    /**
+     * Vérifie que la méthode {@code processTransfer} lève une exception si le destinataire n’existe pas.
+     */
     @Test
     @DisplayName("POST /transfer lève une exception si le receiver n'existe pas")
     void processTransfer_receiverNotFound_shouldThrow() {

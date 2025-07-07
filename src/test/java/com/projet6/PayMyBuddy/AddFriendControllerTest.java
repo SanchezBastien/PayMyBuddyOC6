@@ -17,6 +17,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link AddFriendController}.
+ * Vérifie le bon fonctionnement de l’affichage du formulaire d’ajout d’ami
+ * et du traitement du formulaire selon différents cas de figure.
+ * Utilise des mocks pour isoler les dépendances.
+ */
 class AddFriendControllerTest {
 
     @Mock
@@ -34,17 +40,27 @@ class AddFriendControllerTest {
     @InjectMocks
     private AddFriendController addFriendController;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que l’affichage du formulaire d’ajout d’ami retourne bien la vue attendue.
+     */
     @Test
     void testShowAddFriendForm() {
         String result = addFriendController.showAddFriendForm();
         assertEquals("addfriend", result); // Correction casse
     }
 
+    /**
+     * Vérifie que le traitement de la demande d’ajout d’ami retourne bien la vue attendue,
+     * et que le service métier est correctement appelé.
+     */
     @Test
     void testProcessAddFriend() {
         String friendEmail = "ami@email.com";

@@ -33,6 +33,10 @@ class MyUserDetailsServiceTest {
         user.setPassword("password");
     }
 
+    /**
+     * Teste le chargement d’un utilisateur existant par son email.
+     * Vérifie que la méthode {@code loadUserByUsername} retourne bien les informations de l’utilisateur attendu.
+     */
     @Test
     void testLoadUserByUsername_UserExists() {
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
@@ -41,6 +45,11 @@ class MyUserDetailsServiceTest {
         verify(userRepository, times(1)).findByEmail("test@email.com");
     }
 
+    /**
+     * Teste la gestion du cas où l’utilisateur n’existe pas.
+     * Vérifie que la méthode {@code loadUserByUsername} lance une exception
+     * {@code UsernameNotFoundException} si l’email n’est pas trouvé.
+     */
     @Test
     void testLoadUserByUsername_UserNotFound() {
         when(userRepository.findByEmail("notfound@email.com")).thenReturn(Optional.empty());

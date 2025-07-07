@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-//Traite l’inscription d’un nouvel utilisateur
-
+/**
+ * Contrôleur gérant l’inscription des nouveaux utilisateurs.
+ * Permet d’afficher le formulaire d’inscription et de traiter la création d’un
+ * nouvel utilisateur avec un solde initialisé à zéro.
+ */
 @Controller
 public class SignupController {
 
@@ -23,11 +26,24 @@ public class SignupController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Affiche le formulaire d’inscription.
+     * @return Le nom de la vue "signup".
+     */
     @GetMapping("/signup")
     public String showSignupForm() {
         return "signup";
     }
 
+    /**
+     * Traite la soumission du formulaire d’inscription.
+     * Crée un nouvel utilisateur avec les informations saisies, encode le mot de passe
+     * et initialise le solde à zéro. Sauvegarde l’utilisateur puis redirige vers la page de connexion.
+     * @param username Le nom d’utilisateur choisi.
+     * @param email    L’adresse email.
+     * @param password Le mot de passe non encodé.
+     * @return Une redirection vers la page de login après inscription.
+     */
     @PostMapping("/signup")
     public String processSignup(@RequestParam String username,
                                 @RequestParam String email,

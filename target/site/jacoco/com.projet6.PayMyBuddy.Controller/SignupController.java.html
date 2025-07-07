@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-//Traite l’inscription d’un nouvel utilisateur
-
+/**
+ * Contrôleur gérant l’inscription des nouveaux utilisateurs.
+ * Permet d’afficher le formulaire d’inscription et de traiter la création d’un
+ * nouvel utilisateur avec un solde initialisé à zéro.
+ */
 @Controller
-<span class="fc" id="L18">public class SignupController {</span>
+<span class="fc" id="L21">public class SignupController {</span>
 
     @Autowired
     private UserService userService;
@@ -23,23 +26,36 @@ import java.math.BigDecimal;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Affiche le formulaire d’inscription.
+     * @return Le nom de la vue &quot;signup&quot;.
+     */
     @GetMapping(&quot;/signup&quot;)
     public String showSignupForm() {
-<span class="nc" id="L28">        return &quot;signup&quot;;</span>
+<span class="nc" id="L35">        return &quot;signup&quot;;</span>
     }
 
+    /**
+     * Traite la soumission du formulaire d’inscription.
+     * Crée un nouvel utilisateur avec les informations saisies, encode le mot de passe
+     * et initialise le solde à zéro. Sauvegarde l’utilisateur puis redirige vers la page de connexion.
+     * @param username Le nom d’utilisateur choisi.
+     * @param email    L’adresse email.
+     * @param password Le mot de passe non encodé.
+     * @return Une redirection vers la page de login après inscription.
+     */
     @PostMapping(&quot;/signup&quot;)
     public String processSignup(@RequestParam String username,
                                 @RequestParam String email,
                                 @RequestParam String password) {
-<span class="fc" id="L35">        User user = new User();</span>
-<span class="fc" id="L36">        user.setUsername(username);</span>
-<span class="fc" id="L37">        user.setEmail(email);</span>
-<span class="fc" id="L38">        user.setPassword(passwordEncoder.encode(password));</span>
-<span class="fc" id="L39">        user.setBalance(BigDecimal.ZERO);</span>
+<span class="fc" id="L51">        User user = new User();</span>
+<span class="fc" id="L52">        user.setUsername(username);</span>
+<span class="fc" id="L53">        user.setEmail(email);</span>
+<span class="fc" id="L54">        user.setPassword(passwordEncoder.encode(password));</span>
+<span class="fc" id="L55">        user.setBalance(BigDecimal.ZERO);</span>
 
-<span class="fc" id="L41">        userService.saveUser(user);</span>
-<span class="fc" id="L42">        return &quot;redirect:/login&quot;;</span>
+<span class="fc" id="L57">        userService.saveUser(user);</span>
+<span class="fc" id="L58">        return &quot;redirect:/login&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

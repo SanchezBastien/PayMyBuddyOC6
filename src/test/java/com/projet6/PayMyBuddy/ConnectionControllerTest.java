@@ -17,6 +17,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le contrôleur {@link ConnectionController}.
+ * Vérifie le comportement des endpoints de gestion des connexions (amis) entre utilisateurs,
+ * en isolant les dépendances grâce à des mocks.
+ */
 class ConnectionControllerTest {
     @Mock
     private ConnectionService connectionService;
@@ -27,10 +32,16 @@ class ConnectionControllerTest {
     @InjectMocks
     private ConnectionController connectionController;
 
+    /**
+     * Initialise les mocks pour chaque test.
+     */
     public ConnectionControllerTest() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que la récupération de toutes les connexions ne retourne pas {@code null}.
+     */
     @Test
     void testGetAllConnections() {
         when(connectionService.getConnections()).thenReturn(Collections.emptyList());
@@ -38,6 +49,9 @@ class ConnectionControllerTest {
         assertNotNull(result);
     }
 
+    /**
+     * Vérifie que la récupération des connexions par email utilisateur retourne bien une liste (même vide).
+     */
     @Test
     void testGetConnectionsByUserEmail() {
         when(connectionService.getConnectionsByUser(any())).thenReturn(Collections.emptyList());
@@ -45,6 +59,9 @@ class ConnectionControllerTest {
         assertNotNull(result);
     }
 
+    /**
+     * Vérifie que la création d’une connexion retourne une réponse appropriée.
+     */
     @Test
     void testCreateConnection() {
         // Crée deux utilisateurs fictifs
@@ -71,6 +88,9 @@ class ConnectionControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
+    /**
+     * Vérifie que la suppression d’une connexion retourne une réponse appropriée.
+     */
     @Test
     void testDeleteConnection() {
         doNothing().when(connectionService).deleteConnection(any(Connection.class));

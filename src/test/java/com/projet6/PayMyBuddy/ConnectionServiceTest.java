@@ -15,6 +15,11 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests unitaires pour le service {@link ConnectionService}.
+ * Vérifie la logique métier des connexions : récupération, création, suppression
+ * et gestion de la relation d’amitié, à l’aide de mocks sur le repository et les services dépendants.
+ */
 class ConnectionServiceTest {
 
     @Mock
@@ -29,11 +34,17 @@ class ConnectionServiceTest {
     @Mock
     private Model model;
 
+    /**
+     * Initialise les mocks avant chaque test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Vérifie que la récupération de toutes les connexions retourne bien la liste attendue.
+     */
     @Test
     void getConnections_shouldReturnAllConnections() {
         List<Connection> connections = Arrays.asList(new Connection(), new Connection());
@@ -45,6 +56,9 @@ class ConnectionServiceTest {
         verify(connectionRepository, times(1)).findAll();
     }
 
+    /**
+     * Vérifie que la récupération des connexions pour un utilisateur retourne la bonne liste.
+     */
     @Test
     void getConnectionsByUser_shouldReturnConnectionsForUser() {
         User user = new User();
@@ -57,6 +71,9 @@ class ConnectionServiceTest {
         verify(connectionRepository, times(1)).findByUser(user);
     }
 
+    /**
+     * Vérifie que la sauvegarde d’une connexion persiste bien la connexion et retourne la valeur attendue.
+     */
     @Test
     void saveConnection_shouldSaveAndReturnConnection() {
         Connection connection = new Connection();
@@ -68,6 +85,9 @@ class ConnectionServiceTest {
         verify(connectionRepository, times(1)).save(connection);
     }
 
+    /**
+     * Vérifie que la suppression d’une connexion appelle bien la méthode du repository.
+     */
     @Test
     void deleteConnection_shouldDeleteConnection() {
         Connection connection = new Connection();
@@ -77,6 +97,9 @@ class ConnectionServiceTest {
         verify(connectionRepository, times(1)).delete(connection);
     }
 
+    /**
+     * Vérifie que l’ajout d’ami retourne une erreur si l’utilisateur à ajouter n’existe pas.
+     */
     @Test
     void handleAddFriend_userNotFound_shouldReturnAddFriendWithError() {
         String friendEmail = "test@test.com";
@@ -90,6 +113,9 @@ class ConnectionServiceTest {
         assertThat(result).isEqualTo("addfriend");
     }
 
+    /**
+     * Vérifie que l’ajout d’ami retourne une erreur si l’utilisateur tente de s’ajouter lui-même.
+     */
     @Test
     void handleAddFriend_addSelf_shouldReturnAddFriendWithError() {
         String friendEmail = "me@test.com";
@@ -106,6 +132,10 @@ class ConnectionServiceTest {
         assertThat(result).isEqualTo("addfriend");
     }
 
+
+    /**
+     * Vérifie que l’ajout d’ami retourne une erreur si la connexion existe déjà entre les deux utilisateurs.
+     */
     @Test
     void handleAddFriend_alreadyConnected_shouldReturnAddFriendWithError() {
         String friendEmail = "ami@test.com";
@@ -128,6 +158,10 @@ class ConnectionServiceTest {
         assertThat(result).isEqualTo("addfriend");
     }
 
+    /**
+     * Vérifie que l’ajout d’ami fonctionne et sauvegarde la connexion si tout est valide
+     * (ami non existant, pas soi-même, pas déjà connecté).
+     */
     @Test
     void handleAddFriend_newFriend_shouldSaveAndReturnSuccess() {
         String friendEmail = "newfriend@test.com";
